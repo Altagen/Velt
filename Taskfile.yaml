@@ -136,8 +136,8 @@ tasks:
     desc: Generate SBOM for CI
     cmds:
       - cargo install cargo-cyclonedx || true
-      - cd {{.TAURI_DIR}} && cargo cyclonedx --format json --output-cdx
-      - mv {{.TAURI_DIR}}/bom.json sbom-cargo.json || true
+      - cd {{.TAURI_DIR}} && cargo cyclonedx --format json
+      - mv {{.TAURI_DIR}}/bom.cdx.json sbom-cargo.json || true
 
   ci:checksums:
     desc: Generate checksums for release assets
@@ -207,10 +207,10 @@ tasks:
         fi
 
         cd {{.TAURI_DIR}}
-        cargo cyclonedx --format json --output-cdx
+        cargo cyclonedx --format json
 
-        if [ -f "bom.json" ]; then
-          mv bom.json ../{{.DIST_DIR}}/sbom-{{.VERSION}}.json
+        if [ -f "bom.cdx.json" ]; then
+          mv bom.cdx.json ../{{.DIST_DIR}}/sbom-{{.VERSION}}.json
           echo "SBOM generated at {{.DIST_DIR}}/sbom-{{.VERSION}}.json"
         fi
 

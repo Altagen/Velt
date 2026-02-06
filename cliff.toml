@@ -66,8 +66,8 @@ commit_parsers = [
 # Filter out commits based on regex
 filter_commits = true
 
-# Regex for matching git tags (with v prefix: v0.1.0, v1.0.0, etc.)
-tag_pattern = "v[0-9]+\\.[0-9]+\\.[0-9]+"
+# Regex for matching git tags (semver without v prefix: 0.1.0, 1.0.0, etc.)
+tag_pattern = "[0-9]+\\.[0-9]+\\.[0-9]+"
 
 # Sort tags by version (not date)
 sort_tags = "semver"
