@@ -14,7 +14,7 @@
     "prepare": "husky || true"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.6.1",
+    "@commitlint/cli": "^20.4.1",
     "@commitlint/config-conventional": "^19.6.0",
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "@tauri-apps/cli": "^2.10.0",
