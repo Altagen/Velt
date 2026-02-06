@@ -1,0 +1,278 @@
+version: '3'
+
+vars:
+  VERSION:
+    sh: grep '"version"' src-tauri/tauri.conf.json | head -1 | sed 's/.*"\([0-9.]*\)".*/\1/'
+  APP_NAME: velt
+  DIST_DIR: ./dist
+  TAURI_DIR: src-tauri
+
+tasks:
+  # ============================================
+  # Development
+  # ============================================
+  dev:
+    desc: Run development build with hot reload
+    cmds:
+      - npm run tauri:dev
+
+  dev:frontend:
+    desc: Run frontend dev server only
+    cmds:
+      - npm run dev
+
+  # ============================================
+  # Testing & Linting
+  # ============================================
+  check:
+    desc: Run all checks (TypeScript + Rust)
+    cmds:
+      - task: check-ts
+      - task: check-rust
+
+  check-ts:
+    desc: Run TypeScript/Svelte type checking
+    cmds:
+      - npm run check
+
+  check-rust:
+    desc: Run Rust checks (clippy + fmt)
+    dir: "{{.TAURI_DIR}}"
+    cmds:
+      - cargo clippy -- -D warnings
+      - cargo fmt -- --check
+
+  fmt:
+    desc: Format all code
+    cmds:
+      - task: fmt-rust
+
+  fmt-rust:
+    desc: Format Rust code
+    dir: "{{.TAURI_DIR}}"
+    cmds:
+      - cargo fmt
+
+  # ============================================
+  # Security
+  # ============================================
+  audit:
+    desc: Run security audits (npm + cargo)
+    cmds:
+      - npm audit --audit-level=high || true
+      - cargo audit --file {{.TAURI_DIR}}/Cargo.lock
+
+  audit-npm:
+    desc: Run npm security audit
+    cmds:
+      - npm audit --audit-level=high
+
+  audit-cargo:
+    desc: Run cargo security audit
+    cmds:
+      - cargo audit --file {{.TAURI_DIR}}/Cargo.lock
+
+  # ============================================
+  # Build (Local)
+  # ============================================
+  build:
+    desc: Build for current platform (release)
+    cmds:
+      - npm run tauri:build
+
+  build-linux:
+    desc: Build for Linux x86_64 (AppImage, deb, rpm)
+    cmds:
+      - task: ci:build
+        vars:
+          TARGET: x86_64-unknown-linux-gnu
+          BUNDLES: appimage,deb,rpm
+
+  build-macos-intel:
+    desc: Build for macOS Intel (.dmg)
+    cmds:
+      - task: ci:build
+        vars:
+          TARGET: x86_64-apple-darwin
+          BUNDLES: dmg
+
+  build-macos-arm:
+    desc: Build for macOS Apple Silicon (.dmg)
+    cmds:
+      - task: ci:build
+        vars:
+          TARGET: aarch64-apple-darwin
+          BUNDLES: dmg
+
+  # ============================================
+  # CI Tasks (used by GitHub Actions)
+  # ============================================
+  ci:setup:
+    desc: Setup CI environment
+    cmds:
+      - npm ci
+
+  ci:build:
+    desc: "Build for specific target (usage: task ci:build TARGET=x86_64-unknown-linux-gnu BUNDLES=appimage,deb,rpm)"
+    vars:
+      TARGET: '{{.TARGET | default ""}}'
+      BUNDLES: '{{.BUNDLES | default ""}}'
+    cmds:
+      - |
+        if [ -z "{{.TARGET}}" ]; then
+          echo "Error: TARGET is required"
+          exit 1
+        fi
+        rustup target add {{.TARGET}}
+
+        BUILD_ARGS="--target {{.TARGET}}"
+        if [ -n "{{.BUNDLES}}" ]; then
+          BUILD_ARGS="$BUILD_ARGS --bundles {{.BUNDLES}}"
+        fi
+
+        NO_STRIP=1 npm run tauri:build -- $BUILD_ARGS
+
+  ci:sbom:
+    desc: Generate SBOM for CI
+    cmds:
+      - cargo install cargo-cyclonedx || true
+      - cd {{.TAURI_DIR}} && cargo cyclonedx --format json --output-cdx
+      - mv {{.TAURI_DIR}}/bom.json sbom-cargo.json || true
+
+  ci:checksums:
+    desc: Generate checksums for release assets
+    vars:
+      DIR: '{{.DIR | default "release-assets"}}'
+    cmds:
+      - |
+        cd {{.DIR}}
+        sha256sum * > SHA256SUMS.txt 2>/dev/null || shasum -a 256 * > SHA256SUMS.txt
+        cat SHA256SUMS.txt
+
+  # ============================================
+  # Artifact Management
+  # ============================================
+  copy-linux-artifacts:
+    desc: Copy Linux build artifacts to dist/
+    cmds:
+      - mkdir -p {{.DIST_DIR}}
+      - |
+        BUNDLE_PATH="{{.TAURI_DIR}}/target/x86_64-unknown-linux-gnu/release/bundle"
+
+        find "$BUNDLE_PATH/appimage" -name "*.AppImage" -exec cp {} {{.DIST_DIR}}/{{.APP_NAME}}-{{.VERSION}}-linux-x86_64.AppImage \; 2>/dev/null || true
+        find "$BUNDLE_PATH/deb" -name "*.deb" -exec cp {} {{.DIST_DIR}}/{{.APP_NAME}}-{{.VERSION}}-linux-x86_64.deb \; 2>/dev/null || true
+        find "$BUNDLE_PATH/rpm" -name "*.rpm" -exec cp {} {{.DIST_DIR}}/{{.APP_NAME}}-{{.VERSION}}-linux-x86_64.rpm \; 2>/dev/null || true
+
+        echo "Linux artifacts copied to {{.DIST_DIR}}/"
+        ls -lh {{.DIST_DIR}}/
+
+  copy-macos-artifacts:
+    desc: Copy macOS build artifacts to dist/
+    vars:
+      ARCH: '{{.ARCH | default "x86_64"}}'
+    cmds:
+      - mkdir -p {{.DIST_DIR}}
+      - |
+        TARGET="{{if eq .ARCH "aarch64"}}aarch64-apple-darwin{{else}}x86_64-apple-darwin{{end}}"
+        BUNDLE_PATH="{{.TAURI_DIR}}/target/$TARGET/release/bundle"
+
+        find "$BUNDLE_PATH/dmg" -name "*.dmg" -exec cp {} {{.DIST_DIR}}/{{.APP_NAME}}-{{.VERSION}}-macos-{{.ARCH}}.dmg \; 2>/dev/null || true
+
+        echo "macOS artifacts copied to {{.DIST_DIR}}/"
+        ls -lh {{.DIST_DIR}}/
+
+  # ============================================
+  # SBOM & Checksums
+  # ============================================
+  checksums:
+    desc: Generate SHA256 checksums for all artifacts
+    dir: "{{.DIST_DIR}}"
+    cmds:
+      - |
+        for file in *; do
+          if [ -f "$file" ] && [[ ! "$file" =~ \.sha256$ ]] && [[ ! "$file" =~ \.json$ ]]; then
+            sha256sum "$file" > "$file.sha256"
+            echo "Generated checksum for $file"
+          fi
+        done
+
+  sbom:
+    desc: Generate Software Bill of Materials (SBOM)
+    cmds:
+      - mkdir -p {{.DIST_DIR}}
+      - |
+        if ! command -v cargo-cyclonedx &> /dev/null; then
+          echo "Installing cargo-cyclonedx..."
+          cargo install cargo-cyclonedx
+        fi
+
+        cd {{.TAURI_DIR}}
+        cargo cyclonedx --format json --output-cdx
+
+        if [ -f "bom.json" ]; then
+          mv bom.json ../{{.DIST_DIR}}/sbom-{{.VERSION}}.json
+          echo "SBOM generated at {{.DIST_DIR}}/sbom-{{.VERSION}}.json"
+        fi
+
+  # ============================================
+  # Release
+  # ============================================
+  prepare-release:
+    desc: Build and prepare all release artifacts (local)
+    cmds:
+      - rm -rf {{.DIST_DIR}}
+      - task: build-linux
+      - task: copy-linux-artifacts
+      - task: sbom
+      - task: checksums
+      - echo "Release artifacts prepared in {{.DIST_DIR}}/"
+      - ls -lh {{.DIST_DIR}}/
+
+  # ============================================
+  # Cleanup
+  # ============================================
+  clean:
+    desc: Clean all build artifacts
+    cmds:
+      - rm -rf {{.DIST_DIR}}
+      - rm -rf {{.TAURI_DIR}}/target
+      - rm -rf dist
+      - rm -rf node_modules/.vite
+
+  clean-dist:
+    desc: Clean distribution directory only
+    cmds:
+      - rm -rf {{.DIST_DIR}}
+
+  # ============================================
+  # Utilities
+  # ============================================
+  version:
+    desc: Show current version
+    cmds:
+      - echo "{{.VERSION}}"
+
+  install:
+    desc: Install Velt locally (Linux only)
+    cmds:
+      - |
+        if [ -f "{{.DIST_DIR}}/{{.APP_NAME}}-{{.VERSION}}-linux-x86_64.deb" ]; then
+          sudo dpkg -i {{.DIST_DIR}}/{{.APP_NAME}}-{{.VERSION}}-linux-x86_64.deb
+          echo "Installed Velt {{.VERSION}}"
+        elif [ -f "{{.DIST_DIR}}/{{.APP_NAME}}-{{.VERSION}}-linux-x86_64.AppImage" ]; then
+          mkdir -p ~/.local/bin
+          cp {{.DIST_DIR}}/{{.APP_NAME}}-{{.VERSION}}-linux-x86_64.AppImage ~/.local/bin/velt
+          chmod +x ~/.local/bin/velt
+          echo "Installed Velt {{.VERSION}} to ~/.local/bin/velt"
+        else
+          echo "No build artifacts found. Run 'task build-linux' first."
+          exit 1
+        fi
+
+  # ============================================
+  # Help
+  # ============================================
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list
