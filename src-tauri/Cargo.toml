@@ -1,0 +1,27 @@
+[package]
+name = "velt"
+version = "0.1.0"
+description = "A modern, minimal code editor"
+authors = ["Altagen"]
+license = "MIT"
+edition = "2021"
+
+[lib]
+name = "velt_lib"
+crate-type = ["staticlib", "cdylib", "lib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["devtools"] }
+tauri-plugin-shell = "2"
+tauri-plugin-dialog = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+encoding_rs = "0.8"
+dirs = "5.0"
+clap = { version = "4.5", features = ["derive"] }
+
+[target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
+tauri-plugin-shell = "2"

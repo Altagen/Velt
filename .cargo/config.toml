@@ -1,0 +1,3 @@
+[env]
+# Use X11 backend for compatibility
+GDK_BACKEND = "x11"
