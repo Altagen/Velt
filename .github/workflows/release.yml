@@ -114,11 +114,27 @@ jobs:
       - name: Build Tauri app
         run: task ci:build TARGET=${{ matrix.target }} BUNDLES=${{ matrix.bundles }}
 
+      - name: Create tar.gz archive
+        run: |
+          VERSION=${{ needs.create-release.outputs.version }}
+          TARGET=${{ matrix.target }}
+          BINARY_PATH="src-tauri/target/${TARGET}/release/velt"
+
+          if [[ "$TARGET" == *"darwin"* ]]; then
+            ARCHIVE_NAME="velt-${VERSION}-${TARGET}.tar.gz"
+          else
+            ARCHIVE_NAME="velt-${VERSION}-${TARGET}.tar.gz"
+          fi
+
+          tar -czvf "${ARCHIVE_NAME}" -C "src-tauri/target/${TARGET}/release" velt
+          echo "Created ${ARCHIVE_NAME}"
+
       - name: Upload artifacts to release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
           files: |
+            *.tar.gz
             src-tauri/target/${{ matrix.target }}/release/bundle/**/*.AppImage
             src-tauri/target/${{ matrix.target }}/release/bundle/**/*.deb
             src-tauri/target/${{ matrix.target }}/release/bundle/**/*.rpm
