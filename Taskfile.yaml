@@ -229,6 +229,35 @@ tasks:
       - ls -lh {{.DIST_DIR}}/
 
   # ============================================
+  # Flatpak
+  # ============================================
+  flatpak:gen-sources:
+    desc: Generate offline dependency sources for Flatpak
+    cmds:
+      - |
+        if [ ! -d /tmp/flatpak-builder-tools ]; then
+          git clone --depth=1 https://github.com/flatpak/flatpak-builder-tools.git /tmp/flatpak-builder-tools
+          python3 -m pip install --quiet aiohttp toml /tmp/flatpak-builder-tools/node
+        fi
+      - python3 /tmp/flatpak-builder-tools/cargo/flatpak-cargo-generator.py ./src-tauri/Cargo.lock -o flatpak/cargo-sources.json
+      - flatpak-node-generator npm package-lock.json -o flatpak/node-sources.json
+
+  flatpak:build:
+    desc: Build Flatpak locally
+    cmds:
+      - flatpak-builder --force-clean build-dir flatpak/com.altagen.velt.yml
+
+  flatpak:install:
+    desc: Install Flatpak locally
+    cmds:
+      - flatpak-builder --user --install --force-clean build-dir flatpak/com.altagen.velt.yml
+
+  flatpak:run:
+    desc: Run installed Flatpak
+    cmds:
+      - flatpak run com.altagen.velt
+
+  # ============================================
   # Cleanup
   # ============================================
   clean:

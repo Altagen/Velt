@@ -1,0 +1,38 @@
+app-id: com.altagen.velt
+runtime: org.gnome.Platform
+runtime-version: '46'
+sdk: org.gnome.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.rust-stable
+  - org.freedesktop.Sdk.Extension.node20
+command: velt
+
+finish-args:
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --share=ipc
+  - --device=dri
+  - --filesystem=host
+
+modules:
+  - name: velt
+    buildsystem: simple
+    build-options:
+      append-path: /usr/lib/sdk/rust-stable/bin:/usr/lib/sdk/node20/bin
+      env:
+        CARGO_HOME: /run/build/velt/cargo
+        npm_config_nodedir: /usr/lib/sdk/node20
+    build-commands:
+      - npm ci --offline
+      - npm run build
+      - cargo build --release --manifest-path src-tauri/Cargo.toml
+      - install -Dm755 src-tauri/target/release/velt /app/bin/velt
+      - install -Dm644 flatpak/com.altagen.velt.desktop /app/share/applications/com.altagen.velt.desktop
+      - install -Dm644 flatpak/com.altagen.velt.metainfo.xml /app/share/metainfo/com.altagen.velt.metainfo.xml
+      - install -Dm644 src-tauri/icons/128x128.png /app/share/icons/hicolor/128x128/apps/com.altagen.velt.png
+      - install -Dm644 src-tauri/icons/32x32.png /app/share/icons/hicolor/32x32/apps/com.altagen.velt.png
+    sources:
+      - type: dir
+        path: ..
+      - cargo-sources.json
+      - node-sources.json

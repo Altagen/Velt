@@ -46,3 +46,8 @@ coverage/
 *.tmp
 *.temp
 .cache/
+
+# Flatpak build artifacts
+flatpak/*-sources.json
+build-dir/
+.flatpak-builder/
