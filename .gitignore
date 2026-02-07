@@ -48,6 +48,7 @@ coverage/
 .cache/
 
 # Flatpak build artifacts
-flatpak/*-sources.json
+flatpak/velt
+flatpak/icons/
 build-dir/
 .flatpak-builder/

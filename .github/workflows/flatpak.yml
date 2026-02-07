@@ -8,22 +8,63 @@ on:
   workflow_dispatch:
 
 jobs:
+  build:
+    name: Build Binary
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-unknown-linux-gnu
+
+      - name: Cache Cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build Tauri app
+        run: NO_STRIP=1 npx tauri build --target x86_64-unknown-linux-gnu --bundles none
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: velt-binary
+          path: src-tauri/target/x86_64-unknown-linux-gnu/release/velt
+
   flatpak:
-    name: Build Flatpak
+    name: Package Flatpak
+    needs: build
     runs-on: ubuntu-latest
     container:
-      image: bilelmoussaoui/flatpak-github-actions:gnome-46
+      image: bilelmoussaoui/flatpak-github-actions:gnome-49
       options: --privileged
     steps:
       - uses: actions/checkout@v4
 
-      - name: Generate offline dependency sources
+      - uses: actions/download-artifact@v4
+        with:
+          name: velt-binary
+          path: flatpak/
+
+      - name: Prepare flatpak sources
         run: |
-          python3 -m pip install --quiet aiohttp toml
-          git clone --depth=1 https://github.com/flatpak/flatpak-builder-tools.git /tmp/fbt
-          python3 /tmp/fbt/cargo/flatpak-cargo-generator.py ./src-tauri/Cargo.lock -o flatpak/cargo-sources.json
-          python3 -m pip install --quiet /tmp/fbt/node
-          flatpak-node-generator npm package-lock.json -o flatpak/node-sources.json
+          chmod +x flatpak/velt
+          cp -r src-tauri/icons flatpak/icons
 
       - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
         with:
