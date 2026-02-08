@@ -1,6 +1,24 @@
-# Velt
+<p align="center">
+  <img src="assets/velt-logo-simple.png" alt="Velt Logo" width="128" />
+</p>
 
-A modern, minimal code editor built with Tauri, Svelte, and TypeScript.
+<h1 align="center">Velt</h1>
+
+<p align="center">
+  <strong>Versatile Editor for Light Text</strong>
+</p>
+
+<p align="center">
+  A modern, minimal code editor built with Tauri, Svelte, and TypeScript.
+</p>
+
+<p align="center">
+  <img src="assets/velt-front-dark.png" alt="Velt Editor" width="800" />
+</p>
+
+<p align="center">
+  <img src="assets/velt-settings-dark.png" alt="Velt Settings" width="800" />
+</p>
 
 ## Features
 
