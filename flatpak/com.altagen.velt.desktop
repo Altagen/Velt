@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Velt
+Comment=A minimal, fast code editor
+Exec=velt %F
+Icon=com.altagen.velt
+Terminal=false
+Type=Application
+Categories=Development;TextEditor;Utility;
+MimeType=text/plain;text/x-csrc;text/x-c++src;text/x-java;text/x-python;text/x-ruby;text/javascript;application/json;text/html;text/css;text/xml;text/x-rust;text/x-go;text/x-shellscript;text/markdown;
+Keywords=editor;code;text;development;
+StartupNotify=true
+StartupWMClass=Velt

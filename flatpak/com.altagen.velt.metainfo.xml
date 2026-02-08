@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.altagen.velt</id>
+  <name>Velt</name>
+  <summary>A minimal, fast code editor</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <description>
+    <p>Velt is a lightweight, privacy-focused code editor built with Tauri and Svelte.
+       It features syntax highlighting, theme customization, find and replace,
+       auto-save, and support for multiple programming languages.</p>
+    <p>Designed for developers who value simplicity and performance,
+       Velt runs natively on your desktop with no network access required.</p>
+  </description>
+  <launchable type="desktop-application">com.altagen.velt.desktop</launchable>
+  <url type="homepage">https://github.com/Altagen/Velt</url>
+  <url type="bugtracker">https://github.com/Altagen/Velt/issues</url>
+  <url type="vcs-browser">https://github.com/Altagen/Velt</url>
+  <categories>
+    <category>Development</category>
+    <category>TextEditor</category>
+  </categories>
+  <keywords>
+    <keyword>editor</keyword>
+    <keyword>code</keyword>
+    <keyword>text</keyword>
+    <keyword>development</keyword>
+    <keyword>minimal</keyword>
+  </keywords>
+  <content_rating type="oars-1.1" />
+  <releases>
+    <release version="0.1.2" date="2026-02-07">
+      <description>
+        <p>Add Flatpak support, enable build minification, and various improvements.</p>
+      </description>
+    </release>
+    <release version="0.1.0" date="2025-01-01">
+      <description>
+        <p>Initial release.</p>
+      </description>
+    </release>
+  </releases>
+  <developer id="com.altagen">
+    <name>Altagen</name>
+  </developer>
+</component>

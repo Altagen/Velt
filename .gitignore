@@ -46,3 +46,9 @@ coverage/
 *.tmp
 *.temp
 .cache/
+
+# Flatpak build artifacts
+flatpak/velt
+flatpak/icons/
+build-dir/
+.flatpak-builder/

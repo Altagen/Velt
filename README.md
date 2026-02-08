@@ -139,8 +139,8 @@ velt/
 
 Velt stores its configuration in:
 - **Linux**: `~/.config/velt/`
-- **macOS**: `~/Library/Application Support/com.altagen.velt/`
-- **Windows**: `%APPDATA%\com.altagen.velt\`
+- **macOS**: `~/Library/Application Support/velt/`
+- **Windows**: `%APPDATA%\velt\`
 
 Configuration includes:
 - `config.json` - Application settings

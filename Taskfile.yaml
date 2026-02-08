@@ -229,6 +229,30 @@ tasks:
       - ls -lh {{.DIST_DIR}}/
 
   # ============================================
+  # Flatpak
+  # ============================================
+  flatpak:build:
+    desc: Build Flatpak locally (requires prior 'task build')
+    cmds:
+      - cp src-tauri/target/release/velt flatpak/velt
+      - cp -r src-tauri/icons flatpak/icons
+      - flatpak-builder --force-clean --install-deps-from=flathub build-dir flatpak/com.altagen.velt.yml
+      - rm -f flatpak/velt && rm -rf flatpak/icons
+
+  flatpak:install:
+    desc: Install Flatpak locally (requires prior 'task build')
+    cmds:
+      - cp src-tauri/target/release/velt flatpak/velt
+      - cp -r src-tauri/icons flatpak/icons
+      - flatpak-builder --user --install --force-clean --install-deps-from=flathub build-dir flatpak/com.altagen.velt.yml
+      - rm -f flatpak/velt && rm -rf flatpak/icons
+
+  flatpak:run:
+    desc: Run installed Flatpak
+    cmds:
+      - flatpak run com.altagen.velt
+
+  # ============================================
   # Cleanup
   # ============================================
   clean:

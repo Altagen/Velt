@@ -55,8 +55,8 @@ Users can import custom fonts:
 ### Settings Location
 
 - **Linux**: `~/.config/velt/fonts/`
-- **macOS**: `~/Library/Application Support/com.altagen.velt/fonts/`
-- **Windows**: `%APPDATA%\com.altagen.velt\fonts\`
+- **macOS**: `~/Library/Application Support/velt/fonts/`
+- **Windows**: `%APPDATA%\velt\fonts\`
 
 ### Custom Font Format
 

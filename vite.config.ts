@@ -29,9 +29,14 @@ export default defineConfig({
     dedupe: ['svelte'],
   },
 
-  // Disable minification to preserve method names for Svelte 5 reactive proxy
+  // Preserve method names for Svelte 5 reactive proxy while keeping minification
+  esbuild: {
+    keepNames: true,
+  },
+
   build: {
-    minify: false,
+    minify: 'esbuild',
+    target: 'esnext',
     rollupOptions: {
       output: {
         // Force new file names to bust WebView cache - v13 (Encoding Conversion)
