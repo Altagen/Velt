@@ -52,7 +52,7 @@ jobs:
     permissions:
       contents: write
     container:
-      image: bilelmoussaoui/flatpak-github-actions:gnome-49
+      image: bilelmoussaoui/flatpak-github-actions:gnome-47
       options: --privileged
     steps:
       - uses: actions/checkout@v4
@@ -66,6 +66,7 @@ jobs:
         run: |
           chmod +x flatpak/velt
           cp -r src-tauri/icons flatpak/icons
+          sed -i "s/runtime-version: '49'/runtime-version: '47'/" flatpak/com.altagen.velt.yml
 
       - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
         with:
