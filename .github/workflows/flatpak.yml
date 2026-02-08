@@ -68,23 +68,30 @@ jobs:
           cp -r src-tauri/icons flatpak/icons
           sed -i "s/runtime-version: '49'/runtime-version: '47'/" flatpak/com.altagen.velt.yml
 
+      - name: Get version
+        id: version
+        run: echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
       - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
         with:
           bundle: velt.flatpak
           manifest-path: flatpak/com.altagen.velt.yml
           cache-key: flatpak-builder-${{ github.sha }}
 
+      - name: Rename flatpak bundle
+        run: mv velt.flatpak velt-${{ steps.version.outputs.version }}-linux-x86_64.flatpak
+
       - name: Upload to release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
-          files: velt.flatpak
+          files: velt-*-linux-x86_64.flatpak
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/upload-artifact@v4
         with:
           name: velt-flatpak-x86_64
-          path: velt.flatpak
+          path: velt-*-linux-x86_64.flatpak
           retention-days: 14

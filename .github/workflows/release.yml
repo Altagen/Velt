@@ -64,16 +64,22 @@ jobs:
             platform: ubuntu-22.04
             target: x86_64-unknown-linux-gnu
             bundles: appimage,deb,rpm
+            os: linux
+            arch: x86_64
 
           - name: macOS Intel
             platform: macos-latest
             target: x86_64-apple-darwin
             bundles: dmg
+            os: macos
+            arch: x86_64
 
           - name: macOS Apple Silicon
             platform: macos-latest
             target: aarch64-apple-darwin
             bundles: dmg
+            os: macos
+            arch: aarch64
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -114,31 +120,34 @@ jobs:
       - name: Build Tauri app
         run: task ci:build TARGET=${{ matrix.target }} BUNDLES=${{ matrix.bundles }}
 
-      - name: Create tar.gz archive
+      - name: Rename and collect artifacts
         run: |
           VERSION=${{ needs.create-release.outputs.version }}
+          OS=${{ matrix.os }}
+          ARCH=${{ matrix.arch }}
           TARGET=${{ matrix.target }}
-          BINARY_PATH="src-tauri/target/${TARGET}/release/velt"
+          BUNDLE_PATH="src-tauri/target/${TARGET}/release/bundle"
+          PREFIX="velt-${VERSION}-${OS}-${ARCH}"
 
-          if [[ "$TARGET" == *"darwin"* ]]; then
-            ARCHIVE_NAME="velt-${VERSION}-${TARGET}.tar.gz"
-          else
-            ARCHIVE_NAME="velt-${VERSION}-${TARGET}.tar.gz"
-          fi
+          mkdir -p release-artifacts
 
-          tar -czvf "${ARCHIVE_NAME}" -C "src-tauri/target/${TARGET}/release" velt
-          echo "Created ${ARCHIVE_NAME}"
+          # tar.gz (raw binary)
+          tar -czvf "release-artifacts/${PREFIX}.tar.gz" -C "src-tauri/target/${TARGET}/release" velt
+
+          # Rename platform bundles
+          find "$BUNDLE_PATH/appimage" -name "*.AppImage" -exec cp {} "release-artifacts/${PREFIX}.AppImage" \; 2>/dev/null || true
+          find "$BUNDLE_PATH/deb" -name "*.deb" -exec cp {} "release-artifacts/${PREFIX}.deb" \; 2>/dev/null || true
+          find "$BUNDLE_PATH/rpm" -name "*.rpm" -exec cp {} "release-artifacts/${PREFIX}.rpm" \; 2>/dev/null || true
+          find "$BUNDLE_PATH/dmg" -name "*.dmg" -exec cp {} "release-artifacts/${PREFIX}.dmg" \; 2>/dev/null || true
+
+          echo "Artifacts:"
+          ls -lh release-artifacts/
 
       - name: Upload artifacts to release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
-          files: |
-            *.tar.gz
-            src-tauri/target/${{ matrix.target }}/release/bundle/**/*.AppImage
-            src-tauri/target/${{ matrix.target }}/release/bundle/**/*.deb
-            src-tauri/target/${{ matrix.target }}/release/bundle/**/*.rpm
-            src-tauri/target/${{ matrix.target }}/release/bundle/**/*.dmg
+          files: release-artifacts/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
