@@ -81,6 +81,13 @@ jobs:
             os: macos
             arch: aarch64
 
+          - name: Windows x86_64
+            platform: windows-latest
+            target: x86_64-pc-windows-msvc
+            bundles: nsis
+            os: windows
+            arch: x86_64
+
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4
@@ -120,7 +127,8 @@ jobs:
       - name: Build Tauri app
         run: task ci:build TARGET=${{ matrix.target }} BUNDLES=${{ matrix.bundles }}
 
-      - name: Rename and collect artifacts
+      - name: Rename and collect artifacts (Unix)
+        if: matrix.os != 'windows'
         run: |
           VERSION=${{ needs.create-release.outputs.version }}
           OS=${{ matrix.os }}
@@ -142,6 +150,26 @@ jobs:
 
           echo "Artifacts:"
           ls -lh release-artifacts/
+
+      - name: Rename and collect artifacts (Windows)
+        if: matrix.os == 'windows'
+        shell: pwsh
+        run: |
+          $VERSION = "${{ needs.create-release.outputs.version }}"
+          $TARGET = "${{ matrix.target }}"
+          $PREFIX = "velt-${VERSION}-windows-x86_64"
+          $BUNDLE_PATH = "src-tauri/target/${TARGET}/release/bundle"
+
+          New-Item -ItemType Directory -Force -Path release-artifacts
+
+          # zip (portable binary)
+          Compress-Archive -Path "src-tauri/target/${TARGET}/release/velt.exe" -DestinationPath "release-artifacts/${PREFIX}.zip"
+
+          # Rename NSIS installer
+          Get-ChildItem "${BUNDLE_PATH}/nsis/*.exe" -ErrorAction SilentlyContinue | Copy-Item -Destination "release-artifacts/${PREFIX}-setup.exe"
+
+          Write-Host "Artifacts:"
+          Get-ChildItem release-artifacts/
 
       - name: Upload artifacts to release
         uses: softprops/action-gh-release@v2
