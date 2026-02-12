@@ -64,16 +64,29 @@ jobs:
             platform: ubuntu-22.04
             target: x86_64-unknown-linux-gnu
             bundles: appimage,deb,rpm
+            os: linux
+            arch: x86_64
 
           - name: macOS Intel
             platform: macos-latest
             target: x86_64-apple-darwin
             bundles: dmg
+            os: macos
+            arch: x86_64
 
           - name: macOS Apple Silicon
             platform: macos-latest
             target: aarch64-apple-darwin
             bundles: dmg
+            os: macos
+            arch: aarch64
+
+          - name: Windows x86_64
+            platform: windows-latest
+            target: x86_64-pc-windows-msvc
+            bundles: nsis
+            os: windows
+            arch: x86_64
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -103,42 +116,77 @@ jobs:
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 
       - name: Install Task
+        if: matrix.os != 'windows'
         uses: arduino/setup-task@v2
         with:
           version: 3.x
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install npm dependencies
-        run: task ci:setup
+        run: npm ci
 
-      - name: Build Tauri app
-        run: task ci:build TARGET=${{ matrix.target }} BUNDLES=${{ matrix.bundles }}
+      - name: Build Tauri app (Unix)
+        if: matrix.os != 'windows'
+        run: |
+          rustup target add ${{ matrix.target }}
+          NO_STRIP=1 npm run tauri:build -- --target ${{ matrix.target }} --bundles ${{ matrix.bundles }}
 
-      - name: Create tar.gz archive
+      - name: Build Tauri app (Windows)
+        if: matrix.os == 'windows'
+        shell: pwsh
+        run: |
+          rustup target add ${{ matrix.target }}
+          npm run tauri:build -- --target ${{ matrix.target }} --bundles ${{ matrix.bundles }}
+
+      - name: Rename and collect artifacts (Unix)
+        if: matrix.os != 'windows'
         run: |
           VERSION=${{ needs.create-release.outputs.version }}
+          OS=${{ matrix.os }}
+          ARCH=${{ matrix.arch }}
           TARGET=${{ matrix.target }}
-          BINARY_PATH="src-tauri/target/${TARGET}/release/velt"
+          BUNDLE_PATH="src-tauri/target/${TARGET}/release/bundle"
+          PREFIX="velt-${VERSION}-${OS}-${ARCH}"
 
-          if [[ "$TARGET" == *"darwin"* ]]; then
-            ARCHIVE_NAME="velt-${VERSION}-${TARGET}.tar.gz"
-          else
-            ARCHIVE_NAME="velt-${VERSION}-${TARGET}.tar.gz"
-          fi
+          mkdir -p release-artifacts
 
-          tar -czvf "${ARCHIVE_NAME}" -C "src-tauri/target/${TARGET}/release" velt
-          echo "Created ${ARCHIVE_NAME}"
+          # tar.gz (raw binary)
+          tar -czvf "release-artifacts/${PREFIX}.tar.gz" -C "src-tauri/target/${TARGET}/release" velt
+
+          # Rename platform bundles
+          find "$BUNDLE_PATH/appimage" -name "*.AppImage" -exec cp {} "release-artifacts/${PREFIX}.AppImage" \; 2>/dev/null || true
+          find "$BUNDLE_PATH/deb" -name "*.deb" -exec cp {} "release-artifacts/${PREFIX}.deb" \; 2>/dev/null || true
+          find "$BUNDLE_PATH/rpm" -name "*.rpm" -exec cp {} "release-artifacts/${PREFIX}.rpm" \; 2>/dev/null || true
+          find "$BUNDLE_PATH/dmg" -name "*.dmg" -exec cp {} "release-artifacts/${PREFIX}.dmg" \; 2>/dev/null || true
+
+          echo "Artifacts:"
+          ls -lh release-artifacts/
+
+      - name: Rename and collect artifacts (Windows)
+        if: matrix.os == 'windows'
+        shell: pwsh
+        run: |
+          $VERSION = "${{ needs.create-release.outputs.version }}"
+          $TARGET = "${{ matrix.target }}"
+          $PREFIX = "velt-${VERSION}-windows-x86_64"
+          $BUNDLE_PATH = "src-tauri/target/${TARGET}/release/bundle"
+
+          New-Item -ItemType Directory -Force -Path release-artifacts
+
+          # zip (portable binary)
+          Compress-Archive -Path "src-tauri/target/${TARGET}/release/velt.exe" -DestinationPath "release-artifacts/${PREFIX}.zip"
+
+          # Rename NSIS installer
+          Get-ChildItem "${BUNDLE_PATH}/nsis/*.exe" -ErrorAction SilentlyContinue | Copy-Item -Destination "release-artifacts/${PREFIX}-setup.exe"
+
+          Write-Host "Artifacts:"
+          Get-ChildItem release-artifacts/
 
       - name: Upload artifacts to release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
-          files: |
-            *.tar.gz
-            src-tauri/target/${{ matrix.target }}/release/bundle/**/*.AppImage
-            src-tauri/target/${{ matrix.target }}/release/bundle/**/*.deb
-            src-tauri/target/${{ matrix.target }}/release/bundle/**/*.rpm
-            src-tauri/target/${{ matrix.target }}/release/bundle/**/*.dmg
+          files: release-artifacts/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
