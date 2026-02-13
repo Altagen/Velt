@@ -240,7 +240,6 @@ async fn create_new_window(app: tauri::AppHandle) -> Result<(), String> {
         .resizable(true)
         .fullscreen(false)
         .decorations(true)
-        .transparent(false)
         .build()
         .map_err(|e| format!("Failed to create new window: {}", e))?;
 
