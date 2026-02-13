@@ -35,13 +35,13 @@ fn main() {
     // Set environment variables for Wayland compatibility
     #[cfg(target_os = "linux")]
     {
-        // Check if running on Wayland and user hasn't explicitly set GDK_BACKEND
-        if env::var("WAYLAND_DISPLAY").is_ok() && env::var("GDK_BACKEND").is_err() {
-            // Default to X11 backend for better WebKit compatibility
-            // Users can override with: GDK_BACKEND=wayland velt
-            env::set_var("GDK_BACKEND", "x11");
-            env::set_var("WEBKIT_DISABLE_COMPOSITING_MODE", "1");
-            env::set_var("WEBKIT_DISABLE_DMABUF_RENDERER", "1");
+        if env::var("WAYLAND_DISPLAY").is_ok() {
+            // On Wayland: use native Wayland backend but disable DMABUF
+            // renderer which causes black/blank windows on many GPU drivers.
+            // Users can override with: GDK_BACKEND=x11 velt
+            if env::var("WEBKIT_DISABLE_DMABUF_RENDERER").is_err() {
+                env::set_var("WEBKIT_DISABLE_DMABUF_RENDERER", "1");
+            }
         }
     }
 

@@ -217,7 +217,7 @@ fn clear_recent_files() -> Result<(), String> {
 }
 
 #[tauri::command]
-fn create_new_window(app: tauri::AppHandle) -> Result<(), String> {
+async fn create_new_window(app: tauri::AppHandle) -> Result<(), String> {
     use tauri::WebviewUrl;
     use tauri::WebviewWindowBuilder;
 
@@ -230,12 +230,17 @@ fn create_new_window(app: tauri::AppHandle) -> Result<(), String> {
             .as_millis()
     );
 
-    // Create a new window with the same configuration as the main window
+    // Must be async: on Windows, WebView2 deadlocks when creating
+    // windows from a synchronous command handler due to thread affinity.
+    // Linux (WebKitGTK) and macOS (WKWebView) don't have this constraint.
     WebviewWindowBuilder::new(&app, window_label, WebviewUrl::default())
         .title("Velt")
         .inner_size(1200.0, 800.0)
         .min_inner_size(800.0, 600.0)
         .resizable(true)
+        .fullscreen(false)
+        .decorations(true)
+        .transparent(false)
         .build()
         .map_err(|e| format!("Failed to create new window: {}", e))?;
 
