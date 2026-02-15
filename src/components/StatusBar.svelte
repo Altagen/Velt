@@ -146,9 +146,9 @@
       <span>Spaces: {$settings.tabSize}</span>
       {#if showTabSizeMenu}
         <div class="dropdown-menu" style="background-color: {$currentTheme?.ui?.background || '#252526'}; border-color: {$currentTheme?.ui?.border || '#3e3e42'}">
-          <button class="dropdown-item" class:active={$settings.tabSize === 2} on:click={() => setTabSize(2)} style="color: {$currentTheme?.ui?.textColor || '#cccccc'}">2 Spaces</button>
-          <button class="dropdown-item" class:active={$settings.tabSize === 4} on:click={() => setTabSize(4)} style="color: {$currentTheme?.ui?.textColor || '#cccccc'}">4 Spaces</button>
-          <button class="dropdown-item" class:active={$settings.tabSize === 8} on:click={() => setTabSize(8)} style="color: {$currentTheme?.ui?.textColor || '#cccccc'}">8 Spaces</button>
+          <button class="dropdown-item" tabindex="-1" class:active={$settings.tabSize === 2} on:click={() => setTabSize(2)} style="color: {$currentTheme?.ui?.textColor || '#cccccc'}">2 Spaces</button>
+          <button class="dropdown-item" tabindex="-1" class:active={$settings.tabSize === 4} on:click={() => setTabSize(4)} style="color: {$currentTheme?.ui?.textColor || '#cccccc'}">4 Spaces</button>
+          <button class="dropdown-item" tabindex="-1" class:active={$settings.tabSize === 8} on:click={() => setTabSize(8)} style="color: {$currentTheme?.ui?.textColor || '#cccccc'}">8 Spaces</button>
         </div>
       {/if}
     </div>
@@ -196,9 +196,9 @@
       <span>{eol}</span>
       {#if showEOLMenu}
         <div class="dropdown-menu" style="background-color: {$currentTheme?.ui?.background || '#252526'}; border-color: {$currentTheme?.ui?.border || '#3e3e42'}">
-          <button class="dropdown-item" class:active={eol === 'LF'} on:click={() => changeEOL('LF')} style="color: {$currentTheme?.ui?.textColor || '#cccccc'}">LF (Unix)</button>
-          <button class="dropdown-item" class:active={eol === 'CRLF'} on:click={() => changeEOL('CRLF')} style="color: {$currentTheme?.ui?.textColor || '#cccccc'}">CRLF (Windows)</button>
-          <button class="dropdown-item" class:active={eol === 'CR'} on:click={() => changeEOL('CR')} style="color: {$currentTheme?.ui?.textColor || '#cccccc'}">CR (Old Mac)</button>
+          <button class="dropdown-item" tabindex="-1" class:active={eol === 'LF'} on:click={() => changeEOL('LF')} style="color: {$currentTheme?.ui?.textColor || '#cccccc'}">LF (Unix)</button>
+          <button class="dropdown-item" tabindex="-1" class:active={eol === 'CRLF'} on:click={() => changeEOL('CRLF')} style="color: {$currentTheme?.ui?.textColor || '#cccccc'}">CRLF (Windows)</button>
+          <button class="dropdown-item" tabindex="-1" class:active={eol === 'CR'} on:click={() => changeEOL('CR')} style="color: {$currentTheme?.ui?.textColor || '#cccccc'}">CR (Old Mac)</button>
         </div>
       {/if}
     </div>
@@ -214,11 +214,11 @@
       <span>{encoding}</span>
       {#if showEncodingMenu}
         <div class="dropdown-menu" style="background-color: {$currentTheme?.ui?.background || '#252526'}; border-color: {$currentTheme?.ui?.border || '#3e3e42'}">
-          <button class="dropdown-item" class:active={encoding === 'UTF-8'} on:click={() => changeEncoding('UTF-8')} style="color: {$currentTheme?.ui?.textColor || '#cccccc'}">UTF-8</button>
-          <button class="dropdown-item" class:active={encoding === 'UTF-8-BOM'} on:click={() => changeEncoding('UTF-8-BOM')} style="color: {$currentTheme?.ui?.textColor || '#cccccc'}">UTF-8 with BOM</button>
-          <button class="dropdown-item" class:active={encoding === 'UTF-16LE'} on:click={() => changeEncoding('UTF-16LE')} style="color: {$currentTheme?.ui?.textColor || '#cccccc'}">UTF-16 LE</button>
-          <button class="dropdown-item" class:active={encoding === 'UTF-16BE'} on:click={() => changeEncoding('UTF-16BE')} style="color: {$currentTheme?.ui?.textColor || '#cccccc'}">UTF-16 BE</button>
-          <button class="dropdown-item" class:active={encoding === 'WINDOWS-1252' || encoding === 'ANSI'} on:click={() => changeEncoding('WINDOWS-1252')} style="color: {$currentTheme?.ui?.textColor || '#cccccc'}">ANSI / Windows-1252</button>
+          <button class="dropdown-item" tabindex="-1" class:active={encoding === 'UTF-8'} on:click={() => changeEncoding('UTF-8')} style="color: {$currentTheme?.ui?.textColor || '#cccccc'}">UTF-8</button>
+          <button class="dropdown-item" tabindex="-1" class:active={encoding === 'UTF-8-BOM'} on:click={() => changeEncoding('UTF-8-BOM')} style="color: {$currentTheme?.ui?.textColor || '#cccccc'}">UTF-8 with BOM</button>
+          <button class="dropdown-item" tabindex="-1" class:active={encoding === 'UTF-16LE'} on:click={() => changeEncoding('UTF-16LE')} style="color: {$currentTheme?.ui?.textColor || '#cccccc'}">UTF-16 LE</button>
+          <button class="dropdown-item" tabindex="-1" class:active={encoding === 'UTF-16BE'} on:click={() => changeEncoding('UTF-16BE')} style="color: {$currentTheme?.ui?.textColor || '#cccccc'}">UTF-16 BE</button>
+          <button class="dropdown-item" tabindex="-1" class:active={encoding === 'WINDOWS-1252' || encoding === 'ANSI'} on:click={() => changeEncoding('WINDOWS-1252')} style="color: {$currentTheme?.ui?.textColor || '#cccccc'}">ANSI / Windows-1252</button>
         </div>
       {/if}
     </div>

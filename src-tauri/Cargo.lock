@@ -4092,12 +4092,15 @@ dependencies = [
  "clap",
  "dirs 5.0.1",
  "encoding_rs",
+ "gdk",
+ "gtk",
  "serde",
  "serde_json",
  "tauri",
  "tauri-build",
  "tauri-plugin-dialog",
  "tauri-plugin-shell",
+ "webkit2gtk",
 ]
 
 [[package]]

@@ -12,5 +12,6 @@ export interface AppSettings {
   tabSize: number;
   wordWrap: boolean;
   showInvisibles: boolean;
+  autoIndent: boolean;
   zoomLevel: number; // 100 = 100%
 }

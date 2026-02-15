@@ -60,6 +60,7 @@
     class="menu-button"
     on:click|stopPropagation={toggleMenu}
     title="Recent Files"
+    tabindex="-1"
     style="color: {$currentTheme?.ui?.textColor || '#cccccc'}"
   >
     <span class="icon"><ClockCounterClockwise size={18} weight="duotone" color={$currentTheme?.icons?.clock || '#FFB74D'} /></span>
@@ -78,6 +79,7 @@
               class="recent-file-item"
               on:click={() => handleFileClick(filePath)}
               title={filePath}
+              tabindex="-1"
               style="color: {$currentTheme?.ui?.textColor || '#cccccc'}"
             >
               <span class="file-icon"><File size={14} weight="duotone" color={$currentTheme?.icons?.file || '#64B5F6'} /></span>
@@ -92,6 +94,7 @@
           <button
             class="clear-recent-btn"
             on:click={handleClearRecent}
+            tabindex="-1"
             style="color: {$currentTheme?.ui?.textSecondary || '#858585'}"
           >
             Clear Recent Files
