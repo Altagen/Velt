@@ -616,9 +616,9 @@ pub fn run_with_files(files: Vec<String>) {
             {
                 let main_webview = app.get_webview_window("main").unwrap();
                 let _ = main_webview.with_webview(|webview| {
-                    use webkit2gtk::WebViewExt;
-                    use webkit2gtk::SettingsExt;
                     use gtk::prelude::WidgetExt;
+                    use webkit2gtk::SettingsExt;
+                    use webkit2gtk::WebViewExt;
 
                     let wk_webview = webview.inner();
 
