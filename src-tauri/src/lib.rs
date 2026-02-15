@@ -3,7 +3,6 @@ use std::collections::HashSet;
 use std::fs;
 use std::process::Command;
 use std::sync::Mutex;
-#[cfg(debug_assertions)]
 use tauri::Manager;
 
 mod config;
@@ -603,15 +602,53 @@ pub fn run_with_files(files: Vec<String>) {
             delete_imported_font,
             get_platform,
         ])
-        .setup(|_app| {
+        .setup(|app| {
             // Initialize config directory and default files
             if let Err(e) = config::initialize_config() {
                 eprintln!("Failed to initialize config: {}", e);
             }
 
+            // Intercept Shift+Tab (ISO_Left_Tab) at GTK level.
+            // On Linux/GTK, Shift+Tab generates a different keyval (ISO_Left_Tab = 0xfe20)
+            // which WebKitGTK handles internally for focus navigation before JS ever sees it.
+            // We intercept it at the GTK widget level and inject a JS custom event instead.
+            #[cfg(target_os = "linux")]
+            {
+                let main_webview = app.get_webview_window("main").unwrap();
+                let _ = main_webview.with_webview(|webview| {
+                    use gtk::prelude::WidgetExt;
+                    use webkit2gtk::SettingsExt;
+                    use webkit2gtk::WebViewExt;
+
+                    let wk_webview = webview.inner();
+
+                    // Also disable tab-to-links for good measure
+                    if let Some(settings) = WebViewExt::settings(&wk_webview) {
+                        settings.set_enable_tabs_to_links(false);
+                    }
+
+                    // Intercept ISO_Left_Tab (Shift+Tab) before WebKitGTK consumes it
+                    let wk_view = wk_webview.clone();
+                    #[allow(deprecated)]
+                    wk_webview.connect_key_press_event(move |_, event| {
+                        // ISO_Left_Tab = 0xfe20 (what GTK generates for Shift+Tab)
+                        if event.keyval() == 0xfe20_u32.into() {
+                            #[allow(deprecated)]
+                            wk_view.run_javascript(
+                                "window.dispatchEvent(new CustomEvent('native-shift-tab'))",
+                                None::<&gtk::gio::Cancellable>,
+                                |_| {},
+                            );
+                            return gtk::glib::Propagation::Stop;
+                        }
+                        gtk::glib::Propagation::Proceed
+                    });
+                });
+            }
+
             #[cfg(debug_assertions)]
             {
-                let window = _app.get_webview_window("main").unwrap();
+                let window = app.get_webview_window("main").unwrap();
                 window.open_devtools();
             }
             Ok(())

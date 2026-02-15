@@ -3,7 +3,7 @@ import type { Tab, AppSettings } from '../types';
 import { getDefaultMonospaceFont } from '../lib/systemFonts';
 
 // Default settings
-const defaultSettings: AppSettings = {
+export const defaultSettings: AppSettings = {
   showMenuIcons: true,
   currentTheme: 'Dark',
   autoSave: true,
@@ -13,6 +13,7 @@ const defaultSettings: AppSettings = {
   tabSize: 2,
   wordWrap: false,
   showInvisibles: false,
+  autoIndent: true,
   zoomLevel: 100,
 };
 

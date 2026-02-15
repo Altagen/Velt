@@ -6,7 +6,7 @@
   import SettingsModal from './components/SettingsModal.svelte';
   import ConfirmDialog from './components/ConfirmDialog.svelte';
   import SimpleConfirmDialog from './components/SimpleConfirmDialog.svelte';
-  import { tabs, activeTabId, addTab, createTab, updateTabContent, settings, removeTab, getTab, saveTab, updateTabFile, updateTabEncoding } from './stores/appStore';
+  import { tabs, activeTabId, addTab, createTab, updateTabContent, settings, defaultSettings, removeTab, getTab, saveTab, updateTabFile, updateTabEncoding } from './stores/appStore';
   import { closeTabDialog, closeCloseTabDialog } from './stores/dialogStore';
   import { reloadDialog, closeReloadDialog } from './stores/reloadDialogStore';
   import { saveFile, type FileContent } from './lib/fileOperations';
@@ -114,7 +114,7 @@
       const stored = localStorage.getItem('velt-settings');
       if (stored) {
         const loadedSettings = JSON.parse(stored);
-        settings.set({ ...loadedSettings });
+        settings.set({ ...defaultSettings, ...loadedSettings });
       }
     } catch (e) {
       console.error('Failed to load settings:', e);
@@ -213,6 +213,7 @@
         <p style="color: {$currentTheme?.ui?.textSecondary || '#858585'}">No file open</p>
         <button
           on:click={handleNewFile}
+          tabindex="-1"
           style="background-color: {$currentTheme?.ui?.accent || '#0e639c'}; color: #ffffff"
         >
           Create New File

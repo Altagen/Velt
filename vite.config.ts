@@ -18,10 +18,9 @@ export default defineConfig({
     },
   },
 
-  // Optimize dependencies, especially local packages
+  // Optimize dependencies
   optimizeDeps: {
-    include: ['velt-core'],
-    exclude: [],
+    include: ['@altagen/velt-core'],
   },
 
   // Better handling of local packages
