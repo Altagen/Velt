@@ -57,7 +57,7 @@
       on:click={() => selectTab(tab.id)}
       on:keydown={(e) => handleKeyDown(e, tab.id)}
       role="tab"
-      tabindex="0"
+      tabindex="-1"
       title={tab.filePath || 'Untitled'}
     >
       {#if tab.isDirty}
@@ -72,6 +72,7 @@
         class="close-button"
         on:click={(e) => closeTab(e, tab.id)}
         aria-label="Close tab"
+        tabindex="-1"
       >
         <X size={14} weight="bold" color={$currentTheme?.icons?.close || '#9E9E9E'} />
       </button>

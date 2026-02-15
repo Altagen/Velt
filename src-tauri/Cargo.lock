@@ -4087,17 +4087,20 @@ dependencies = [
 
 [[package]]
 name = "velt"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "clap",
  "dirs 5.0.1",
  "encoding_rs",
+ "gdk",
+ "gtk",
  "serde",
  "serde_json",
  "tauri",
  "tauri-build",
  "tauri-plugin-dialog",
  "tauri-plugin-shell",
+ "webkit2gtk",
 ]
 
 [[package]]

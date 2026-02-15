@@ -172,6 +172,7 @@
       tabSize: $settings.tabSize,
       wordWrap: $settings.wordWrap,
       showInvisibles: $settings.showInvisibles,
+      autoIndent: $settings.autoIndent,
     });
 
     // Set up cursor change listener
@@ -314,6 +315,10 @@
 
   $: if (editor && $settings.showInvisibles !== undefined) {
     editor.setShowInvisibles($settings.showInvisibles);
+  }
+
+  $: if (editor && $settings.autoIndent !== undefined) {
+    editor.setAutoIndent($settings.autoIndent);
   }
 </script>
 

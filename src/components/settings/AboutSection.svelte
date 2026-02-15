@@ -3,7 +3,7 @@
 
   const appInfo = {
     name: 'Velt',
-    version: '0.1.4',
+    version: '0.1.5',
     description: 'A modern, minimal notepad built with Tauri, Svelte, and CodeMirror.',
     repository: 'https://github.com/altagen/velt',
     license: 'MIT',

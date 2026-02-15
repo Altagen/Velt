@@ -15,6 +15,10 @@
   function toggleShowInvisibles() {
     settings.update(s => ({ ...s, showInvisibles: !s.showInvisibles }));
   }
+
+  function toggleAutoIndent() {
+    settings.update(s => ({ ...s, autoIndent: !s.autoIndent }));
+  }
 </script>
 
 <!-- Tab Size -->
@@ -88,6 +92,31 @@
         type="checkbox"
         checked={$settings.showInvisibles}
         on:change={toggleShowInvisibles}
+      />
+      <span class="toggle-slider" style="--toggle-bg: {$currentTheme?.ui?.border || '#3e3e42'}; --toggle-active: {$currentTheme?.ui?.accentPrimary || '#00d4aa'}"></span>
+    </label>
+  </div>
+</div>
+
+<!-- Auto Indent -->
+<div
+  class="setting-card"
+  style="background-color: {$currentTheme?.editor?.background || '#1e1e1e'}; border-color: {$currentTheme?.ui?.border || '#3e3e42'}"
+>
+  <div class="setting-card-header">
+    <div class="setting-info">
+      <h5 style="color: {$currentTheme?.ui?.textColor || '#d4d4d4'}">
+        Auto Indent
+      </h5>
+      <p style="color: {$currentTheme?.ui?.textSecondary || '#858585'}">
+        Automatically indent new lines based on context
+      </p>
+    </div>
+    <label class="toggle-switch">
+      <input
+        type="checkbox"
+        checked={$settings.autoIndent}
+        on:change={toggleAutoIndent}
       />
       <span class="toggle-slider" style="--toggle-bg: {$currentTheme?.ui?.border || '#3e3e42'}; --toggle-active: {$currentTheme?.ui?.accentPrimary || '#00d4aa'}"></span>
     </label>

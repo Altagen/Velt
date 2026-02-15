@@ -497,6 +497,7 @@
     class="menu-button"
     on:click={handleNew}
     title="New (Ctrl+N)"
+    tabindex="-1"
     style="color: {$currentTheme?.ui?.textColor || '#cccccc'}"
   >
     <span class="icon"><FilePlus size={18} weight="duotone" color={$currentTheme?.icons?.file || '#64B5F6'} /></span>
@@ -507,6 +508,7 @@
     class="menu-button"
     on:click={handleNewWindow}
     title="New Window (Ctrl+Shift+N)"
+    tabindex="-1"
     style="color: {$currentTheme?.ui?.textColor || '#cccccc'}"
   >
     <span class="icon"><AppWindow size={18} weight="duotone" color={$currentTheme?.icons?.window || '#7986CB'} /></span>
@@ -517,6 +519,7 @@
     class="menu-button"
     on:click={handleOpen}
     title="Open (Ctrl+O)"
+    tabindex="-1"
     style="color: {$currentTheme?.ui?.textColor || '#cccccc'}"
   >
     <span class="icon"><FolderOpen size={18} weight="duotone" color={$currentTheme?.icons?.folder || '#FFB74D'} /></span>
@@ -529,6 +532,7 @@
     class="menu-button"
     on:click={handleSave}
     title="Save (Ctrl+S)"
+    tabindex="-1"
     style="color: {$currentTheme?.ui?.textColor || '#cccccc'}"
   >
     <span class="icon"><FloppyDisk size={18} weight="duotone" color={$currentTheme?.icons?.save || '#81C784'} /></span>
@@ -539,6 +543,7 @@
     class="menu-button"
     on:click={handleSaveAs}
     title="Save As (Ctrl+Shift+S)"
+    tabindex="-1"
     style="color: {$currentTheme?.ui?.textColor || '#cccccc'}"
   >
     <span class="icon"><FloppyDisk size={18} weight="duotone" color={$currentTheme?.icons?.save || '#81C784'} /></span>
@@ -549,6 +554,7 @@
     class="menu-button"
     on:click={handleSaveAll}
     title="Save All (Ctrl+Alt+S)"
+    tabindex="-1"
     style="color: {$currentTheme?.ui?.textColor || '#cccccc'}; opacity: {dirtyFilesCount > 0 ? 1 : 0.5}"
     disabled={dirtyFilesCount === 0}
   >
@@ -569,6 +575,7 @@
     class="menu-button"
     on:click={handleReload}
     title="Reload from Disk (F5)"
+    tabindex="-1"
     style="color: {$currentTheme?.ui?.textColor || '#cccccc'}; opacity: {canReload ? 1 : 0.5}"
     disabled={!canReload}
   >
@@ -580,6 +587,7 @@
     class="menu-button"
     on:click={() => showSettingsModal.set(true)}
     title="Settings"
+    tabindex="-1"
     style="color: {$currentTheme?.ui?.textColor || '#cccccc'}"
   >
     <span class="icon"><GearSix size={18} weight="duotone" color={$currentTheme?.icons?.settings || '#BA68C8'} /></span>
