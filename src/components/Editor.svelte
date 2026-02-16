@@ -47,7 +47,6 @@
   function handleEOLChange(newEOL: string) {
     if (!editor) return;
 
-    console.log('[Editor] Changing EOL to:', newEOL);
 
     switch (newEOL) {
       case 'LF':
@@ -63,11 +62,9 @@
 
     // Directly set the EOL type since we know what we just converted to
     eolType = newEOL;
-    console.log('[Editor] EOL type updated to:', eolType);
   }
 
   function handleEncodingChange(newEncoding: string) {
-    console.log('[Editor] Changing encoding to:', newEncoding);
 
     // Update tab encoding - this will be used when saving the file
     onContentChange(tab.content); // Trigger dirty state if needed
@@ -157,14 +154,12 @@
   onMount(() => {
     const language = tab.language || detectLanguageFromPath(tab.filePath);
 
-    console.log('[Editor] Creating VeltEditor with theme:', $currentTheme);
     editor = new VeltEditor({
       container: editorContainer,
       content: tab.content,
       language,
       onChange: (content) => {
         onContentChange(content);
-        updateStatusBar();
       },
       theme: $currentTheme || undefined,
       fontSize: $settings.fontSize,
@@ -263,7 +258,6 @@
 
     window.addEventListener('editor-action', handleEditorAction as EventListener);
 
-    console.log('[Editor] VeltEditor created');
 
     // Cleanup event listener
     return () => {
@@ -292,7 +286,6 @@
 
   // Apply theme when it changes (hot-reload)
   $: if (editor && $currentTheme) {
-    console.log('[Editor] Theme changed, applying:', $currentTheme);
     editor.applyTheme($currentTheme);
   }
 
