@@ -1,0 +1,393 @@
+/* Markdown Preview Styles */
+
+/* Typography */
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: var(--md-heading-font-weight, 600);
+  font-family: var(--md-heading-font-family, inherit);
+  line-height: 1.3;
+  color: var(--md-heading-color, inherit);
+}
+
+.markdown-body h1 {
+  font-size: var(--md-h1-font-size, 2em);
+  font-weight: var(--md-h1-font-weight, var(--md-heading-font-weight, 600));
+  color: var(--md-h1-color, var(--md-heading-color, inherit));
+  padding-bottom: 0.3em;
+  border-bottom: var(--md-h1-border-bottom, 1px solid rgba(255, 255, 255, 0.1));
+}
+
+.markdown-body h2 {
+  font-size: var(--md-h2-font-size, 1.5em);
+  font-weight: var(--md-h2-font-weight, var(--md-heading-font-weight, 600));
+  color: var(--md-h2-color, var(--md-heading-color, inherit));
+  padding-bottom: 0.2em;
+  border-bottom: var(--md-h2-border-bottom, 1px solid rgba(255, 255, 255, 0.07));
+}
+
+.markdown-body h3 {
+  font-size: var(--md-h3-font-size, 1.25em);
+  font-weight: var(--md-h3-font-weight, var(--md-heading-font-weight, 600));
+  color: var(--md-h3-color, var(--md-heading-color, inherit));
+}
+
+.markdown-body h4 {
+  font-size: var(--md-h4-font-size, 1em);
+  font-weight: var(--md-h4-font-weight, var(--md-heading-font-weight, 600));
+  color: var(--md-h4-color, var(--md-heading-color, inherit));
+}
+
+.markdown-body h5 {
+  font-size: var(--md-h5-font-size, 0.875em);
+  font-weight: var(--md-h5-font-weight, var(--md-heading-font-weight, 600));
+  color: var(--md-h5-color, var(--md-heading-color, inherit));
+}
+
+.markdown-body h6 {
+  font-size: var(--md-h6-font-size, 0.85em);
+  font-weight: var(--md-h6-font-weight, var(--md-heading-font-weight, 600));
+  color: var(--md-h6-color, var(--md-heading-color, inherit));
+  opacity: var(--md-h6-opacity, 0.8);
+}
+
+.markdown-body p {
+  margin: 0.8em 0;
+  line-height: var(--md-line-height, 1.7);
+}
+
+.markdown-body a {
+  color: var(--md-link-color, #58a6ff);
+  text-decoration: var(--md-link-decoration, none);
+}
+
+.markdown-body a:hover {
+  color: var(--md-link-hover-color, var(--md-link-color, #58a6ff));
+  text-decoration: underline;
+}
+
+/* Images */
+.markdown-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--md-image-border-radius, 4px);
+  border: var(--md-image-border, none);
+  margin: 0.5em 0;
+}
+
+/* Blockquotes */
+.markdown-body blockquote {
+  margin: 1em 0;
+  padding: 0.5em 1em;
+  border-left: var(--md-blockquote-border-width, 4px) solid var(--md-blockquote-border, rgba(255, 255, 255, 0.2));
+  background-color: var(--md-blockquote-bg, rgba(255, 255, 255, 0.03));
+  color: var(--md-blockquote-text-color, inherit);
+  border-radius: 0 4px 4px 0;
+}
+
+.markdown-body blockquote p {
+  margin: 0.3em 0;
+  opacity: 0.9;
+}
+
+/* Horizontal rule */
+.markdown-body hr {
+  border: none;
+  border-top: 1px var(--md-hr-style, solid) var(--md-hr-color, rgba(255, 255, 255, 0.15));
+  margin: 2em 0;
+}
+
+/* Lists */
+.markdown-body ul,
+.markdown-body ol {
+  margin: 0.8em 0;
+  padding-left: 2em;
+  line-height: var(--md-line-height, 1.7);
+}
+
+.markdown-body li {
+  margin: 0.3em 0;
+  color: var(--md-list-marker-color, inherit);
+}
+
+.markdown-body li > ul,
+.markdown-body li > ol {
+  margin: 0.2em 0;
+}
+
+/* Task lists */
+.markdown-body ul.contains-task-list,
+.markdown-body .task-list-item {
+  list-style: none;
+}
+
+.markdown-body ul.contains-task-list {
+  padding-left: 0.5em;
+}
+
+.markdown-body .task-list-item input[type="checkbox"] {
+  margin-right: 0.5em;
+  accent-color: var(--md-task-list-check-color, #58a6ff);
+}
+
+/* Inline code */
+.markdown-body code {
+  padding: 0.2em 0.4em;
+  font-size: 0.85em;
+  background-color: var(--md-code-inline-bg, rgba(255, 255, 255, 0.08));
+  color: var(--md-code-inline-color, inherit);
+  border-radius: 3px;
+  font-family: var(--md-code-inline-font-family, 'Consolas', 'Courier New', monospace);
+}
+
+/* Code blocks */
+.markdown-body pre {
+  margin: 1em 0;
+  border-radius: var(--md-code-block-border-radius, 6px);
+  overflow-x: auto;
+}
+
+.markdown-body pre.hljs {
+  padding: 1em;
+  background-color: var(--md-code-block-bg, rgba(0, 0, 0, 0.3));
+}
+
+.markdown-body pre code {
+  padding: 0;
+  background: none;
+  font-size: 0.875em;
+  line-height: 1.6;
+  color: var(--md-code-block-color, inherit);
+  font-family: var(--md-code-block-font-family, 'Consolas', 'Courier New', monospace);
+}
+
+/* Highlight.js syntax colors — all via CSS variables */
+.markdown-body .hljs {
+  color: var(--md-code-block-color, #abb2bf);
+}
+
+.markdown-body .hljs-keyword,
+.markdown-body .hljs-selector-tag,
+.markdown-body .hljs-literal,
+.markdown-body .hljs-section,
+.markdown-body .hljs-link {
+  color: var(--md-syntax-keyword, #c678dd);
+}
+
+.markdown-body .hljs-string,
+.markdown-body .hljs-title,
+.markdown-body .hljs-name,
+.markdown-body .hljs-type,
+.markdown-body .hljs-attribute,
+.markdown-body .hljs-symbol,
+.markdown-body .hljs-bullet,
+.markdown-body .hljs-addition,
+.markdown-body .hljs-variable,
+.markdown-body .hljs-template-tag,
+.markdown-body .hljs-template-variable {
+  color: var(--md-syntax-string, #98c379);
+}
+
+.markdown-body .hljs-comment,
+.markdown-body .hljs-quote,
+.markdown-body .hljs-deletion,
+.markdown-body .hljs-meta {
+  color: var(--md-syntax-comment, #5c6370);
+}
+
+.markdown-body .hljs-number {
+  color: var(--md-syntax-number, #d19a66);
+}
+
+.markdown-body .hljs-built_in,
+.markdown-body .hljs-class .hljs-title,
+.markdown-body .hljs-title.class_ {
+  color: var(--md-syntax-builtin, #e6c07b);
+}
+
+.markdown-body .hljs-attr {
+  color: var(--md-syntax-attribute, #d19a66);
+}
+
+.markdown-body .hljs-function {
+  color: var(--md-syntax-function, #61afef);
+}
+
+.markdown-body .hljs-params {
+  color: var(--md-syntax-variable, #abb2bf);
+}
+
+.markdown-body .hljs-regexp {
+  color: var(--md-syntax-regexp, #56b6c2);
+}
+
+.markdown-body .hljs-tag {
+  color: var(--md-syntax-tag, #e06c75);
+}
+
+.markdown-body .hljs-operator {
+  color: var(--md-syntax-operator, #56b6c2);
+}
+
+.markdown-body .hljs-punctuation {
+  color: var(--md-syntax-punctuation, #abb2bf);
+}
+
+/* Tables */
+.markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  font-size: 0.9em;
+}
+
+.markdown-body th,
+.markdown-body td {
+  padding: 8px 12px;
+  border: 1px solid var(--md-table-border, rgba(255, 255, 255, 0.12));
+  text-align: left;
+}
+
+.markdown-body th {
+  background-color: var(--md-table-header-bg, rgba(255, 255, 255, 0.06));
+  color: var(--md-table-header-color, inherit);
+  font-weight: 600;
+}
+
+.markdown-body tr:nth-child(even) {
+  background-color: var(--md-table-row-even-bg, rgba(255, 255, 255, 0.02));
+}
+
+.markdown-body tr:hover {
+  background-color: var(--md-table-row-hover-bg, transparent);
+}
+
+/* Admonitions */
+.markdown-body .admonition {
+  margin: 1em 0;
+  padding: 12px 16px;
+  border-left: var(--md-admonition-border-width, 4px) solid;
+  border-radius: 0 var(--md-admonition-border-radius, 6px) var(--md-admonition-border-radius, 6px) 0;
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.markdown-body .admonition-title {
+  font-weight: var(--md-admonition-title-font-weight, 600);
+  margin-bottom: 0.5em;
+  font-size: 0.95em;
+}
+
+.markdown-body .admonition-warning {
+  background-color: var(--md-admonition-warning-bg, rgba(230, 167, 0, 0.15));
+  border-left-color: var(--md-admonition-warning-border, #e6a700);
+  color: var(--md-admonition-warning-text, inherit);
+}
+
+.markdown-body .admonition-warning .admonition-title {
+  color: var(--md-admonition-warning-title, inherit);
+}
+
+.markdown-body .admonition-danger {
+  background-color: var(--md-admonition-danger-bg, rgba(229, 57, 53, 0.15));
+  border-left-color: var(--md-admonition-danger-border, #e53935);
+  color: var(--md-admonition-danger-text, inherit);
+}
+
+.markdown-body .admonition-danger .admonition-title {
+  color: var(--md-admonition-danger-title, inherit);
+}
+
+.markdown-body .admonition-info {
+  background-color: var(--md-admonition-info-bg, rgba(33, 150, 243, 0.15));
+  border-left-color: var(--md-admonition-info-border, #2196f3);
+  color: var(--md-admonition-info-text, inherit);
+}
+
+.markdown-body .admonition-info .admonition-title {
+  color: var(--md-admonition-info-title, inherit);
+}
+
+.markdown-body .admonition-tip {
+  background-color: var(--md-admonition-tip-bg, rgba(76, 175, 80, 0.15));
+  border-left-color: var(--md-admonition-tip-border, #4caf50);
+  color: var(--md-admonition-tip-text, inherit);
+}
+
+.markdown-body .admonition-tip .admonition-title {
+  color: var(--md-admonition-tip-title, inherit);
+}
+
+.markdown-body .admonition-note {
+  background-color: var(--md-admonition-note-bg, rgba(158, 158, 158, 0.15));
+  border-left-color: var(--md-admonition-note-border, #9e9e9e);
+  color: var(--md-admonition-note-text, inherit);
+}
+
+.markdown-body .admonition-note .admonition-title {
+  color: var(--md-admonition-note-title, inherit);
+}
+
+/* KaTeX */
+.markdown-body .katex-display {
+  margin: 1em 0;
+  overflow-x: auto;
+  padding: 0.5em 0;
+}
+
+.markdown-body .katex {
+  font-size: var(--md-katex-font-size, 1.1em);
+  color: var(--md-katex-color, inherit);
+}
+
+/* Mermaid */
+.markdown-body pre.mermaid {
+  background: transparent;
+  padding: 1em;
+  text-align: center;
+  overflow-x: auto;
+}
+
+.markdown-body pre.mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.markdown-body pre.mermaid-error {
+  color: #e53935;
+  font-style: italic;
+  padding: 1em;
+  background-color: rgba(229, 57, 53, 0.08);
+  border-radius: 6px;
+}
+
+/* Strikethrough */
+.markdown-body del {
+  opacity: var(--md-strikethrough-opacity, 0.6);
+}
+
+/* Strong & emphasis */
+.markdown-body strong {
+  font-weight: 700;
+  color: var(--md-strong-color, inherit);
+}
+
+.markdown-body em {
+  font-style: italic;
+  color: var(--md-emphasis-color, inherit);
+}
+
+/* Definition lists (if used) */
+.markdown-body dt {
+  font-weight: 600;
+  margin-top: 0.5em;
+}
+
+.markdown-body dd {
+  margin-left: 1.5em;
+  margin-bottom: 0.5em;
+}
