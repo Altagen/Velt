@@ -2,14 +2,13 @@
   import { createEventDispatcher } from 'svelte';
   import { currentTheme } from '../../stores/themeStore';
   import { settings } from '../../stores/appStore';
-  import { getSystemFonts, getDefaultMonospaceFont } from '../../lib/systemFonts';
   import { reloadImportedFonts, type ImportedFont } from '../../lib/importedFonts';
   import { invoke } from '@tauri-apps/api/core';
   import { open } from '@tauri-apps/plugin-dialog';
 
   const dispatch = createEventDispatcher<{ error: string; success: string }>();
 
-  // Custom font input
+  // System font input
   let customFontInput = '';
   let systemFontsList: string[] = [];
   let showSystemFontsList = false;
@@ -21,34 +20,12 @@
   // Imported fonts
   export let importedFonts: ImportedFont[] = [];
 
-  // Get system fonts
-  const defaultFont = getDefaultMonospaceFont();
-
-  const fontFamilies = [
-    { value: defaultFont, label: 'System Default (Recommended)' },
-    { value: '"Fira Code", monospace', label: 'Fira Code (Bundled)' },
-    { value: '"JetBrains Mono", monospace', label: 'JetBrains Mono (Bundled)' },
-    { value: '"Source Code Pro", monospace', label: 'Source Code Pro (Bundled)' },
-    { value: '"Cascadia Code", "Cascadia Mono", monospace', label: 'Cascadia Code (Bundled)' },
-    { value: '"Ubuntu Mono", "Liberation Mono", monospace', label: 'Ubuntu Mono (Bundled)' },
-    { value: 'SF Mono, Monaco, Menlo, monospace', label: 'SF Mono (macOS System)' },
-    { value: 'Consolas, "Courier New", monospace', label: 'Consolas (Windows System)' },
-    { value: '"Courier New", Courier, monospace', label: 'Courier New' },
-    { value: 'monospace', label: 'Generic Monospace' },
-  ];
-
-  function updateFontFamily(event: Event) {
-    const target = event.target as HTMLSelectElement;
-    settings.update(s => ({ ...s, fontFamily: target.value }));
-  }
-
   function applyCustomFont() {
     if (customFontInput.trim()) {
       const fontFamily = customFontInput.includes(',')
         ? customFontInput
         : `"${customFontInput.trim()}", monospace`;
       settings.update(s => ({ ...s, fontFamily }));
-      console.log('[Settings] Applied custom font:', fontFamily);
     }
   }
 
@@ -63,7 +40,6 @@
       const fonts = await invoke<string[]>('list_system_fonts');
       systemFontsList = fonts;
       showSystemFontsList = true;
-      console.log(`[Settings] Loaded ${fonts.length} system fonts`);
     } catch (error) {
       console.error('[Settings] Failed to load system fonts:', error);
       dispatch('error', `Failed to load system fonts: ${error}`);
@@ -79,7 +55,6 @@
       try {
         const fonts = await invoke<string[]>('list_system_fonts');
         systemFontsList = fonts;
-        console.log(`[Settings] Loaded ${fonts.length} system fonts`);
       } catch (error) {
         console.error('[Settings] Failed to load system fonts:', error);
       } finally {
@@ -109,7 +84,6 @@
     customFontInput = fontName;
     showSystemFontsList = false;
     showSuggestions = false;
-    console.log('[Settings] Selected system font:', fontFamily);
   }
 
   $: autocompleteSuggestions = customFontInput && systemFontsList.length > 0
@@ -144,8 +118,7 @@
 
       for (const filePath of files) {
         try {
-          const imported = await invoke<ImportedFont>('import_font', { sourcePath: filePath });
-          console.log('[Settings] Imported font:', imported.name);
+          await invoke<ImportedFont>('import_font', { sourcePath: filePath });
         } catch (error) {
           console.error(`[Settings] Failed to import ${filePath}:`, error);
           dispatch('error', `Failed to import font: ${error}`);
@@ -165,7 +138,6 @@
   async function deleteFont(filename: string) {
     try {
       await invoke('delete_imported_font', { filename });
-      console.log('[Settings] Deleted font:', filename);
 
       importedFonts = await invoke<ImportedFont[]>('list_imported_fonts');
       await reloadImportedFonts();
@@ -178,7 +150,7 @@
   }
 </script>
 
-<!-- Font Family - Preset Fonts -->
+<!-- System Font -->
 <div
   class="setting-card"
   style="background-color: {$currentTheme?.editor?.background || '#1e1e1e'}; border-color: {$currentTheme?.ui?.border || '#3e3e42'}"
@@ -186,37 +158,10 @@
   <div class="setting-card-header">
     <div class="setting-info">
       <h5 style="color: {$currentTheme?.ui?.textColor || '#d4d4d4'}">
-        Font Family - Preset Fonts
+        System Font
       </h5>
       <p style="color: {$currentTheme?.ui?.textSecondary || '#858585'}">
-        Choose from bundled and system fonts
-      </p>
-    </div>
-    <select
-      class="font-select"
-      value={$settings.fontFamily}
-      on:change={updateFontFamily}
-      style="background-color: {$currentTheme?.editor?.background || '#1e1e1e'}; border-color: {$currentTheme?.ui?.border || '#3e3e42'}; color: {$currentTheme?.ui?.textColor || '#d4d4d4'}; min-width: 250px;"
-    >
-      {#each fontFamilies as font}
-        <option value={font.value}>{font.label}</option>
-      {/each}
-    </select>
-  </div>
-</div>
-
-<!-- Custom System Font -->
-<div
-  class="setting-card"
-  style="background-color: {$currentTheme?.editor?.background || '#1e1e1e'}; border-color: {$currentTheme?.ui?.border || '#3e3e42'}"
->
-  <div class="setting-card-header">
-    <div class="setting-info">
-      <h5 style="color: {$currentTheme?.ui?.textColor || '#d4d4d4'}">
-        OR Use Custom System Font
-      </h5>
-      <p style="color: {$currentTheme?.ui?.textSecondary || '#858585'}">
-        Start typing to see suggestions
+        Search and select from your installed system fonts
       </p>
     </div>
     <div class="font-input-container">
@@ -399,26 +344,6 @@
     margin: 0;
     font-size: 13px;
     line-height: 1.4;
-  }
-
-  .font-select {
-    min-width: 180px;
-    height: 32px;
-    padding: 4px 12px;
-    border: 1px solid;
-    border-radius: 4px;
-    font-size: 13px;
-    cursor: pointer;
-    transition: border-color 0.2s, background-color 0.2s;
-  }
-
-  .font-select:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-  }
-
-  .font-select:focus {
-    outline: none;
-    border-color: var(--accent-color, #00d4aa);
   }
 
   .font-autocomplete-dropdown {
