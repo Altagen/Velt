@@ -25,23 +25,16 @@ Consolas, "Cascadia Mono", "Courier New", monospace
 
 ## Font Sources
 
-### 1. Bundled Fonts
-
-Popular coding fonts are bundled via `@fontsource`:
-- Fira Code
-- JetBrains Mono
-- Source Code Pro
-- Cascadia Code
-- Ubuntu Mono
-
-### 2. System Fonts
+### 1. System Fonts
 
 Detected via platform commands:
 - **Linux**: `fc-list`
 - **macOS**: `system_profiler SPFontsDataType`
 - **Windows**: PowerShell font enumeration
 
-### 3. Imported Fonts
+Browse and search your system fonts directly from **Settings > General > System Font**.
+
+### 2. Imported Fonts
 
 Users can import custom fonts:
 
@@ -65,8 +58,8 @@ Users can import custom fonts:
 ```
 
 Examples:
-- `"Fira Code", monospace`
-- `"JetBrains Mono", "Consolas", monospace`
+- `"DejaVu Sans Mono", monospace`
+- `"Liberation Mono", "Consolas", monospace`
 
 ## Sandbox Support (Flatpak)
 
