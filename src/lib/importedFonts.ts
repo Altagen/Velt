@@ -23,7 +23,6 @@ export async function loadImportedFonts(): Promise<ImportedFont[]> {
     const fonts = await invoke<ImportedFont[]>('list_imported_fonts');
 
     if (fonts.length === 0) {
-      console.log('[ImportedFonts] No imported fonts found');
       return [];
     }
 
@@ -58,7 +57,6 @@ export async function loadImportedFonts(): Promise<ImportedFont[]> {
     styleEl.textContent = fontFaceRules;
     fontsLoaded = true;
 
-    console.log(`[ImportedFonts] Loaded ${fonts.length} imported fonts`);
     return fonts;
   } catch (error) {
     console.error('[ImportedFonts] Failed to load imported fonts:', error);

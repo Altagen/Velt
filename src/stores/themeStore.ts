@@ -14,11 +14,8 @@ let watcherInitialized = false;
  */
 export async function initializeTheme(): Promise<void> {
   try {
-    console.log('[ThemeStore] Initializing theme...');
     const theme = await loadCurrentTheme();
-    console.log('[ThemeStore] Loaded theme:', theme);
     currentTheme.set(theme);
-    console.log('[ThemeStore] Theme set successfully');
   } catch (error) {
     console.error('[ThemeStore] Failed to load theme:', error);
   }
@@ -51,18 +48,13 @@ export async function reloadCurrentTheme(): Promise<void> {
 }
 
 /**
- * Initialize theme file watcher for hot-reload
- * This watches for changes in theme JSON files and automatically reloads
- * NOTE: File watching will be implemented later. For now, hot-reload works via reactive statements.
+ * Initialize theme file watcher for hot-reload.
+ * Currently a no-op; hot-reload works via setCurrentTheme() and reloadCurrentTheme().
  */
 export async function initializeThemeWatcher(): Promise<void> {
   if (watcherInitialized) {
     return;
   }
-
-  // TODO: Implement file watcher in Rust backend
-  // For now, hot-reload works when you manually call reloadCurrentTheme()
-  // or when the theme changes via setCurrentTheme()
 
   watcherInitialized = true;
 }
