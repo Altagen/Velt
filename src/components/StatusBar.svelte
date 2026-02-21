@@ -20,9 +20,12 @@
   export let selectedChars: number = 0;
   export let encoding: string = 'UTF-8';
   export let language: string = 'Plain Text';
-  export let eol: string = 'LF'; // Line ending type
-  export let onEOLChange: (eol: string) => void = () => {}; // Callback to change EOL
-  export let onEncodingChange: (encoding: string) => void = () => {}; // Callback to change encoding
+  export let eol: string = 'LF';
+  export let onEOLChange: (eol: string) => void = () => {};
+  export let onEncodingChange: (encoding: string) => void = () => {};
+  export let isMarkdown: boolean = false;
+  export let isToolbarActive: boolean = false;
+  export let onToggleToolbar: () => void = () => {};
 
   // Dropdown states
   let showTabSizeMenu = false;
@@ -132,6 +135,24 @@
     >
       <span>{totalLines} lines, {totalChars} chars</span>
     </div>
+
+    {#if isMarkdown}
+      <div
+        class="status-item clickable"
+        class:toolbar-active={isToolbarActive}
+        title={isToolbarActive ? 'Hide Markdown Toolbar' : 'Show Markdown Toolbar'}
+        style="color: {isToolbarActive ? ($currentTheme?.ui?.accentPrimary || '#00d4aa') : ($currentTheme?.ui?.textSecondary || '#858585')}"
+        on:click={(e) => { e.stopPropagation(); onToggleToolbar(); }}
+      >
+        <span class="icon markdown-icon">
+          <svg viewBox="0 0 16 10" width="16" height="10" fill="currentColor" aria-hidden="true">
+            <path d="M1 1.5C1 1.22 1.22 1 1.5 1h13c.28 0 .5.22.5.5v7c0 .28-.22.5-.5.5h-13a.5.5 0 01-.5-.5v-7zM0 1.5C0 .67.67 0 1.5 0h13c.83 0 1.5.67 1.5 1.5v7c0 .83-.67 1.5-1.5 1.5h-13A1.5 1.5 0 010 8.5v-7z"/>
+            <path d="M3 8V2h1.5l1.5 2 1.5-2H9v6H7.5V4.5L6 6.5 4.5 4.5V8H3zm8.5 0L9.25 5h1.25V2h1.5v3h1.25L11.5 8z"/>
+          </svg>
+        </span>
+        <span>Markdown</span>
+      </div>
+    {/if}
   </div>
 
   <div class="status-right">
@@ -232,6 +253,7 @@
       <span class="icon"><Code size={14} weight="duotone" color={$currentTheme?.icons?.language || '#4DB6AC'} /></span>
       <span>{language}</span>
     </div>
+
   </div>
 </div>
 
@@ -282,6 +304,15 @@
     line-height: 1;
   }
 
+  .markdown-icon {
+    display: flex;
+    align-items: center;
+  }
+
+  .toolbar-active {
+    background-color: rgba(0, 212, 170, 0.15);
+  }
+
   .dropdown-menu {
     position: absolute;
     bottom: 100%;
@@ -315,4 +346,5 @@
     background-color: rgba(0, 212, 170, 0.2);
     font-weight: 600;
   }
+
 </style>

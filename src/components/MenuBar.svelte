@@ -11,6 +11,9 @@
   import { getFileName } from '@altagen/velt-core';
   import RecentFilesList from './RecentFilesList.svelte';
   import { invoke } from '@tauri-apps/api/core';
+  import { toggleMarkdownMode } from '../stores/markdownPreviewStore';
+  import { focusedPaneId } from '../stores/paneStore';
+  import { get } from 'svelte/store';
   import FilePlus from 'phosphor-svelte/lib/FilePlus';
   import AppWindow from 'phosphor-svelte/lib/AppWindow';
   import FolderOpen from 'phosphor-svelte/lib/FolderOpen';
@@ -123,7 +126,6 @@
       const dirtyTabs = $tabs.filter(tab => tab.isDirty && tab.filePath);
 
       if (dirtyTabs.length === 0) {
-        console.log('No files to save');
         return;
       }
 
@@ -142,10 +144,6 @@
         }
       }
 
-      // Show feedback
-      if (savedCount > 0) {
-        console.log(`Saved ${savedCount} file${savedCount > 1 ? 's' : ''}`);
-      }
       if (failedCount > 0) {
         alert(`Failed to save ${failedCount} file${failedCount > 1 ? 's' : ''}`);
       }
@@ -210,10 +208,8 @@
     if (event.key === 'F2') {
       event.preventDefault();
       if (event.shiftKey) {
-        console.log('[MenuBar] Shift+F2 → previousBookmark');
         handleEditorAction('previousBookmark');
       } else {
-        console.log('[MenuBar] F2 → nextBookmark');
         handleEditorAction('nextBookmark');
       }
       return;
@@ -222,7 +218,6 @@
     // F9 for Sort Lines Ascending (A-Z)
     if (event.key === 'F9') {
       event.preventDefault();
-      console.log('[MenuBar] F9 → sortLinesAscending');
       handleEditorAction('sortLinesAscending');
       return;
     }
@@ -230,7 +225,6 @@
     // F10 for Sort Lines Descending (Z-A)
     if (event.key === 'F10') {
       event.preventDefault();
-      console.log('[MenuBar] F10 → sortLinesDescending');
       handleEditorAction('sortLinesDescending');
       return;
     }
@@ -238,7 +232,6 @@
     // F11 for Convert to LF (Unix line endings)
     if (event.key === 'F11') {
       event.preventDefault();
-      console.log('[MenuBar] F11 → convertToLF');
       handleEditorAction('convertToLF');
       return;
     }
@@ -248,10 +241,8 @@
     if (event.key === 'F12') {
       event.preventDefault();
       if (event.shiftKey) {
-        console.log('[MenuBar] Shift+F12 → convertToCR');
         handleEditorAction('convertToCR');
       } else {
-        console.log('[MenuBar] F12 → convertToCRLF');
         handleEditorAction('convertToCRLF');
       }
       return;
@@ -298,10 +289,8 @@
         // Ctrl+Shift+M: Clear all bookmarks
         event.preventDefault();
         if (event.shiftKey) {
-          console.log('[MenuBar] Ctrl+Shift+M → clearBookmarks');
           handleEditorAction('clearBookmarks');
         } else {
-          console.log('[MenuBar] Ctrl+M → toggleBookmark');
           handleEditorAction('toggleBookmark');
         }
       } else if (event.key === 'd' || event.key === 'D') {
@@ -309,7 +298,6 @@
         // Ctrl+Shift+D: Remove duplicate lines
         event.preventDefault();
         if (event.shiftKey) {
-          console.log('[MenuBar] Ctrl+Shift+D → removeDuplicateLines');
           handleEditorAction('removeDuplicateLines');
         } else {
           handleEditorAction('duplicateLine');
@@ -324,6 +312,10 @@
         // Ctrl+/: Toggle line comment
         event.preventDefault();
         handleEditorAction('toggleLineComment');
+      } else if ((event.key === 'v' || event.key === 'V') && event.shiftKey) {
+        // Ctrl+Shift+V: Toggle markdown mode (toolbar + preview tab)
+        event.preventDefault();
+        toggleMarkdownMode();
       } else if (event.key === '=' || event.key === '+') {
         // Ctrl+ or Ctrl=: Zoom in
         event.preventDefault();
@@ -351,37 +343,31 @@
       // Alt+U: Convert to UPPERCASE
       else if (event.key === 'u' || event.key === 'U') {
         event.preventDefault();
-        console.log('[MenuBar] Alt+U → convertToUppercase');
         handleEditorAction('convertToUppercase');
       }
       // Alt+L: Convert to lowercase
       else if (event.key === 'l' || event.key === 'L') {
         event.preventDefault();
-        console.log('[MenuBar] Alt+L → convertToLowercase');
         handleEditorAction('convertToLowercase');
       }
       // Alt+T: Convert to Title Case
       else if (event.key === 't' || event.key === 'T') {
         event.preventDefault();
-        console.log('[MenuBar] Alt+T → convertToTitleCase');
         handleEditorAction('convertToTitleCase');
       }
       // Alt+I: Invert Case
       else if (event.key === 'i' || event.key === 'I') {
         event.preventDefault();
-        console.log('[MenuBar] Alt+I → invertCase');
         handleEditorAction('invertCase');
       }
       // Alt+W: Trim trailing whitespace
       else if (event.key === 'w' || event.key === 'W') {
         event.preventDefault();
-        console.log('[MenuBar] Alt+W → trimTrailingSpaces');
         handleEditorAction('trimTrailingSpaces');
       }
       // Alt+B: Remove blank lines
       else if (event.key === 'b' || event.key === 'B') {
         event.preventDefault();
-        console.log('[MenuBar] Alt+B → removeBlankLines');
         handleEditorAction('removeBlankLines');
       }
     } else if (event.key === 'Tab') {
@@ -450,7 +436,7 @@
    */
   function handleEditorAction(action: string) {
     // Dispatch custom event that the Editor component will listen to
-    window.dispatchEvent(new CustomEvent('editor-action', { detail: { action } }));
+    window.dispatchEvent(new CustomEvent('editor-action', { detail: { action, targetPane: get(focusedPaneId) } }));
   }
 
   /**
@@ -583,6 +569,7 @@
     <span class="label">Reload</span>
   </button>
 
+
   <button
     class="menu-button"
     on:click={() => showSettingsModal.set(true)}
@@ -666,4 +653,5 @@
     background-color: #3e3e42;
     margin: 0 4px;
   }
+
 </style>

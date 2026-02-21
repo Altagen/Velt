@@ -113,6 +113,270 @@ pub struct IconsTheme {
     pub window: Option<String>,
 }
 
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
+pub struct SyntaxTheme {
+    pub keyword: Option<String>,
+    pub string: Option<String>,
+    pub number: Option<String>,
+    pub comment: Option<String>,
+    pub function: Option<String>,
+    pub variable: Option<String>,
+    #[serde(rename = "type")]
+    pub type_: Option<String>,
+    pub operator: Option<String>,
+    pub punctuation: Option<String>,
+    pub attribute: Option<String>,
+    pub tag: Option<String>,
+    pub regexp: Option<String>,
+    pub builtin: Option<String>,
+    pub meta: Option<String>,
+    pub property: Option<String>,
+    pub constant: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
+pub struct HeadingStyle {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub color: Option<String>,
+    #[serde(rename = "fontSize", skip_serializing_if = "Option::is_none")]
+    pub font_size: Option<String>,
+    #[serde(rename = "fontWeight", skip_serializing_if = "Option::is_none")]
+    pub font_weight: Option<String>,
+    #[serde(rename = "borderBottom", skip_serializing_if = "Option::is_none")]
+    pub border_bottom: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub opacity: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
+pub struct CodeSyntaxTheme {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub keyword: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub string: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub comment: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub number: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub function: Option<String>,
+    #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
+    pub type_: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub attribute: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub builtin: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub regexp: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub variable: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub meta: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tag: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub punctuation: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
+pub struct AdmonitionStyle {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub background: Option<String>,
+    #[serde(rename = "borderColor", skip_serializing_if = "Option::is_none")]
+    pub border_color: Option<String>,
+    #[serde(rename = "titleColor", skip_serializing_if = "Option::is_none")]
+    pub title_color: Option<String>,
+    #[serde(rename = "textColor", skip_serializing_if = "Option::is_none")]
+    pub text_color: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub icon: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
+pub struct AdmonitionsTheme {
+    #[serde(rename = "borderRadius", skip_serializing_if = "Option::is_none")]
+    pub border_radius: Option<String>,
+    #[serde(rename = "borderWidth", skip_serializing_if = "Option::is_none")]
+    pub border_width: Option<String>,
+    #[serde(rename = "titleFontWeight", skip_serializing_if = "Option::is_none")]
+    pub title_font_weight: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub info: Option<AdmonitionStyle>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub warning: Option<AdmonitionStyle>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub danger: Option<AdmonitionStyle>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tip: Option<AdmonitionStyle>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub note: Option<AdmonitionStyle>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub custom: Option<std::collections::HashMap<String, AdmonitionStyle>>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
+pub struct MarkdownPreviewTheme {
+    // General
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub background: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub foreground: Option<String>,
+    #[serde(rename = "fontFamily", skip_serializing_if = "Option::is_none")]
+    pub font_family: Option<String>,
+    #[serde(rename = "fontSize", skip_serializing_if = "Option::is_none")]
+    pub font_size: Option<String>,
+    #[serde(rename = "lineHeight", skip_serializing_if = "Option::is_none")]
+    pub line_height: Option<String>,
+    #[serde(rename = "maxWidth", skip_serializing_if = "Option::is_none")]
+    pub max_width: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub padding: Option<String>,
+
+    // Links
+    #[serde(rename = "linkColor", skip_serializing_if = "Option::is_none")]
+    pub link_color: Option<String>,
+    #[serde(rename = "linkHoverColor", skip_serializing_if = "Option::is_none")]
+    pub link_hover_color: Option<String>,
+    #[serde(rename = "linkDecoration", skip_serializing_if = "Option::is_none")]
+    pub link_decoration: Option<String>,
+
+    // Headings
+    #[serde(rename = "headingColor", skip_serializing_if = "Option::is_none")]
+    pub heading_color: Option<String>,
+    #[serde(rename = "headingFontFamily", skip_serializing_if = "Option::is_none")]
+    pub heading_font_family: Option<String>,
+    #[serde(rename = "headingFontWeight", skip_serializing_if = "Option::is_none")]
+    pub heading_font_weight: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub h1: Option<HeadingStyle>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub h2: Option<HeadingStyle>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub h3: Option<HeadingStyle>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub h4: Option<HeadingStyle>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub h5: Option<HeadingStyle>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub h6: Option<HeadingStyle>,
+
+    // Blockquotes
+    #[serde(rename = "blockquoteBorder", skip_serializing_if = "Option::is_none")]
+    pub blockquote_border: Option<String>,
+    #[serde(
+        rename = "blockquoteBackground",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub blockquote_background: Option<String>,
+    #[serde(
+        rename = "blockquoteTextColor",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub blockquote_text_color: Option<String>,
+    #[serde(
+        rename = "blockquoteBorderWidth",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub blockquote_border_width: Option<String>,
+
+    // Code
+    #[serde(rename = "codeInlineBg", skip_serializing_if = "Option::is_none")]
+    pub code_inline_bg: Option<String>,
+    #[serde(rename = "codeInlineColor", skip_serializing_if = "Option::is_none")]
+    pub code_inline_color: Option<String>,
+    #[serde(
+        rename = "codeInlineFontFamily",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub code_inline_font_family: Option<String>,
+    #[serde(rename = "codeBlockBg", skip_serializing_if = "Option::is_none")]
+    pub code_block_bg: Option<String>,
+    #[serde(rename = "codeBlockColor", skip_serializing_if = "Option::is_none")]
+    pub code_block_color: Option<String>,
+    #[serde(
+        rename = "codeBlockFontFamily",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub code_block_font_family: Option<String>,
+    #[serde(
+        rename = "codeBlockBorderRadius",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub code_block_border_radius: Option<String>,
+    #[serde(rename = "codeSyntax", skip_serializing_if = "Option::is_none")]
+    pub code_syntax: Option<CodeSyntaxTheme>,
+
+    // Tables
+    #[serde(rename = "tableBorder", skip_serializing_if = "Option::is_none")]
+    pub table_border: Option<String>,
+    #[serde(
+        rename = "tableHeaderBackground",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub table_header_background: Option<String>,
+    #[serde(rename = "tableHeaderColor", skip_serializing_if = "Option::is_none")]
+    pub table_header_color: Option<String>,
+    #[serde(rename = "tableRowEvenBg", skip_serializing_if = "Option::is_none")]
+    pub table_row_even_bg: Option<String>,
+    #[serde(rename = "tableRowHoverBg", skip_serializing_if = "Option::is_none")]
+    pub table_row_hover_bg: Option<String>,
+
+    // HR
+    #[serde(rename = "hrColor", skip_serializing_if = "Option::is_none")]
+    pub hr_color: Option<String>,
+    #[serde(rename = "hrStyle", skip_serializing_if = "Option::is_none")]
+    pub hr_style: Option<String>,
+
+    // Lists
+    #[serde(rename = "listMarkerColor", skip_serializing_if = "Option::is_none")]
+    pub list_marker_color: Option<String>,
+    #[serde(rename = "taskListCheckColor", skip_serializing_if = "Option::is_none")]
+    pub task_list_check_color: Option<String>,
+
+    // Images
+    #[serde(rename = "imageBorderRadius", skip_serializing_if = "Option::is_none")]
+    pub image_border_radius: Option<String>,
+    #[serde(rename = "imageBorder", skip_serializing_if = "Option::is_none")]
+    pub image_border: Option<String>,
+
+    // Admonitions (structured)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub admonitions: Option<AdmonitionsTheme>,
+    // Legacy flat properties (backwards compat)
+    #[serde(rename = "admonitionInfoBg", skip_serializing_if = "Option::is_none")]
+    pub admonition_info_bg: Option<String>,
+    #[serde(
+        rename = "admonitionWarningBg",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub admonition_warning_bg: Option<String>,
+    #[serde(rename = "admonitionDangerBg", skip_serializing_if = "Option::is_none")]
+    pub admonition_danger_bg: Option<String>,
+    #[serde(rename = "admonitionTipBg", skip_serializing_if = "Option::is_none")]
+    pub admonition_tip_bg: Option<String>,
+    #[serde(rename = "admonitionNoteBg", skip_serializing_if = "Option::is_none")]
+    pub admonition_note_bg: Option<String>,
+
+    // KaTeX
+    #[serde(rename = "katexColor", skip_serializing_if = "Option::is_none")]
+    pub katex_color: Option<String>,
+    #[serde(rename = "katexFontSize", skip_serializing_if = "Option::is_none")]
+    pub katex_font_size: Option<String>,
+
+    // Emphasis
+    #[serde(rename = "strongColor", skip_serializing_if = "Option::is_none")]
+    pub strong_color: Option<String>,
+    #[serde(rename = "emphasisColor", skip_serializing_if = "Option::is_none")]
+    pub emphasis_color: Option<String>,
+    #[serde(
+        rename = "strikethroughOpacity",
+        skip_serializing_if = "Option::is_none"
+    )]
+    pub strikethrough_opacity: Option<String>,
+}
+
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Theme {
     pub name: String,
@@ -121,6 +385,10 @@ pub struct Theme {
     pub ui: UiTheme,
     #[serde(default)]
     pub icons: Option<IconsTheme>,
+    #[serde(default)]
+    pub syntax: Option<SyntaxTheme>,
+    #[serde(default, rename = "markdownPreview")]
+    pub markdown_preview: Option<MarkdownPreviewTheme>,
 }
 
 /// Get the Velt config directory path
@@ -235,6 +503,158 @@ fn create_default_themes(themes_dir: &Path) -> Result<(), String> {
             clock: Some("#FFB74D".to_string()),      // Orange
             window: Some("#7986CB".to_string()),     // Indigo
         }),
+        syntax: Some(SyntaxTheme {
+            keyword: Some("#c678dd".to_string()),
+            string: Some("#98c379".to_string()),
+            number: Some("#d19a66".to_string()),
+            comment: Some("#5c6370".to_string()),
+            function: Some("#61afef".to_string()),
+            variable: Some("#e06c75".to_string()),
+            type_: Some("#e6c07b".to_string()),
+            operator: Some("#56b6c2".to_string()),
+            punctuation: Some("#abb2bf".to_string()),
+            attribute: Some("#d19a66".to_string()),
+            tag: Some("#e06c75".to_string()),
+            regexp: Some("#56b6c2".to_string()),
+            builtin: Some("#e6c07b".to_string()),
+            meta: Some("#5c6370".to_string()),
+            property: Some("#61afef".to_string()),
+            constant: Some("#d19a66".to_string()),
+        }),
+        markdown_preview: Some(MarkdownPreviewTheme {
+            // General
+            background: None,
+            foreground: None,
+            font_family: None,
+            font_size: None,
+            line_height: None,
+            max_width: None,
+            padding: None,
+
+            // Links
+            link_color: Some("#58a6ff".to_string()),
+            link_hover_color: None,
+            link_decoration: None,
+
+            // Headings
+            heading_color: Some("#d4d4d4".to_string()),
+            heading_font_family: None,
+            heading_font_weight: None,
+            h1: None,
+            h2: None,
+            h3: None,
+            h4: None,
+            h5: None,
+            h6: None,
+
+            // Blockquotes
+            blockquote_border: Some("rgba(255, 255, 255, 0.2)".to_string()),
+            blockquote_background: Some("rgba(255, 255, 255, 0.03)".to_string()),
+            blockquote_text_color: None,
+            blockquote_border_width: None,
+
+            // Code
+            code_inline_bg: Some("rgba(255, 255, 255, 0.08)".to_string()),
+            code_inline_color: None,
+            code_inline_font_family: None,
+            code_block_bg: Some("rgba(0, 0, 0, 0.3)".to_string()),
+            code_block_color: Some("#abb2bf".to_string()),
+            code_block_font_family: None,
+            code_block_border_radius: None,
+            code_syntax: Some(CodeSyntaxTheme {
+                keyword: Some("#c678dd".to_string()),
+                string: Some("#98c379".to_string()),
+                comment: Some("#5c6370".to_string()),
+                number: Some("#d19a66".to_string()),
+                function: Some("#61afef".to_string()),
+                type_: Some("#e6c07b".to_string()),
+                attribute: Some("#d19a66".to_string()),
+                builtin: Some("#e6c07b".to_string()),
+                regexp: Some("#56b6c2".to_string()),
+                variable: Some("#e06c75".to_string()),
+                meta: Some("#5c6370".to_string()),
+                tag: Some("#e06c75".to_string()),
+                operator: Some("#56b6c2".to_string()),
+                punctuation: Some("#abb2bf".to_string()),
+            }),
+
+            // Tables
+            table_border: Some("rgba(255, 255, 255, 0.12)".to_string()),
+            table_header_background: Some("rgba(255, 255, 255, 0.06)".to_string()),
+            table_header_color: None,
+            table_row_even_bg: None,
+            table_row_hover_bg: None,
+
+            // HR
+            hr_color: Some("rgba(255, 255, 255, 0.15)".to_string()),
+            hr_style: None,
+
+            // Lists
+            list_marker_color: None,
+            task_list_check_color: None,
+
+            // Images
+            image_border_radius: None,
+            image_border: None,
+
+            // Admonitions (structured)
+            admonitions: Some(AdmonitionsTheme {
+                border_radius: None,
+                border_width: None,
+                title_font_weight: None,
+                info: Some(AdmonitionStyle {
+                    background: Some("rgba(33, 150, 243, 0.15)".to_string()),
+                    border_color: Some("#2196f3".to_string()),
+                    title_color: None,
+                    text_color: None,
+                    icon: Some("\u{2139}\u{fe0f}".to_string()),
+                }),
+                warning: Some(AdmonitionStyle {
+                    background: Some("rgba(230, 167, 0, 0.15)".to_string()),
+                    border_color: Some("#e6a700".to_string()),
+                    title_color: None,
+                    text_color: None,
+                    icon: Some("\u{26a0}\u{fe0f}".to_string()),
+                }),
+                danger: Some(AdmonitionStyle {
+                    background: Some("rgba(229, 57, 53, 0.15)".to_string()),
+                    border_color: Some("#e53935".to_string()),
+                    title_color: None,
+                    text_color: None,
+                    icon: Some("\u{1f534}".to_string()),
+                }),
+                tip: Some(AdmonitionStyle {
+                    background: Some("rgba(76, 175, 80, 0.15)".to_string()),
+                    border_color: Some("#4caf50".to_string()),
+                    title_color: None,
+                    text_color: None,
+                    icon: Some("\u{1f4a1}".to_string()),
+                }),
+                note: Some(AdmonitionStyle {
+                    background: Some("rgba(158, 158, 158, 0.15)".to_string()),
+                    border_color: Some("#9e9e9e".to_string()),
+                    title_color: None,
+                    text_color: None,
+                    icon: Some("\u{1f4dd}".to_string()),
+                }),
+                custom: None,
+            }),
+            // Legacy flat properties (backwards compat, prefer "admonitions" above)
+            admonition_info_bg: None,
+            admonition_warning_bg: None,
+            admonition_danger_bg: None,
+            admonition_tip_bg: None,
+            admonition_note_bg: None,
+
+            // KaTeX
+            katex_color: None,
+            katex_font_size: None,
+
+            // Emphasis
+            strong_color: None,
+            emphasis_color: None,
+            strikethrough_opacity: None,
+        }),
     };
 
     let dark_path = themes_dir.join("default-dark.json");
@@ -302,6 +722,158 @@ fn create_default_themes(themes_dir: &Path) -> Result<(), String> {
             language: Some("#00897B".to_string()),   // Teal
             clock: Some("#F57C00".to_string()),      // Deep orange
             window: Some("#3949AB".to_string()),     // Indigo
+        }),
+        syntax: Some(SyntaxTheme {
+            keyword: Some("#7928a1".to_string()),
+            string: Some("#50a14f".to_string()),
+            number: Some("#986801".to_string()),
+            comment: Some("#a0a1a7".to_string()),
+            function: Some("#4078f2".to_string()),
+            variable: Some("#e45649".to_string()),
+            type_: Some("#c18401".to_string()),
+            operator: Some("#0184bc".to_string()),
+            punctuation: Some("#383a42".to_string()),
+            attribute: Some("#986801".to_string()),
+            tag: Some("#e45649".to_string()),
+            regexp: Some("#0184bc".to_string()),
+            builtin: Some("#c18401".to_string()),
+            meta: Some("#a0a1a7".to_string()),
+            property: Some("#4078f2".to_string()),
+            constant: Some("#986801".to_string()),
+        }),
+        markdown_preview: Some(MarkdownPreviewTheme {
+            // General
+            background: None,
+            foreground: None,
+            font_family: None,
+            font_size: None,
+            line_height: None,
+            max_width: None,
+            padding: None,
+
+            // Links
+            link_color: Some("#0066cc".to_string()),
+            link_hover_color: None,
+            link_decoration: None,
+
+            // Headings
+            heading_color: Some("#000000".to_string()),
+            heading_font_family: None,
+            heading_font_weight: None,
+            h1: None,
+            h2: None,
+            h3: None,
+            h4: None,
+            h5: None,
+            h6: None,
+
+            // Blockquotes
+            blockquote_border: Some("rgba(0, 0, 0, 0.15)".to_string()),
+            blockquote_background: Some("rgba(0, 0, 0, 0.03)".to_string()),
+            blockquote_text_color: None,
+            blockquote_border_width: None,
+
+            // Code
+            code_inline_bg: Some("rgba(0, 0, 0, 0.06)".to_string()),
+            code_inline_color: None,
+            code_inline_font_family: None,
+            code_block_bg: Some("rgba(0, 0, 0, 0.05)".to_string()),
+            code_block_color: Some("#383a42".to_string()),
+            code_block_font_family: None,
+            code_block_border_radius: None,
+            code_syntax: Some(CodeSyntaxTheme {
+                keyword: Some("#7928a1".to_string()),
+                string: Some("#50a14f".to_string()),
+                comment: Some("#a0a1a7".to_string()),
+                number: Some("#986801".to_string()),
+                function: Some("#4078f2".to_string()),
+                type_: Some("#c18401".to_string()),
+                attribute: Some("#986801".to_string()),
+                builtin: Some("#c18401".to_string()),
+                regexp: Some("#0184bc".to_string()),
+                variable: Some("#e45649".to_string()),
+                meta: Some("#a0a1a7".to_string()),
+                tag: Some("#e45649".to_string()),
+                operator: Some("#0184bc".to_string()),
+                punctuation: Some("#383a42".to_string()),
+            }),
+
+            // Tables
+            table_border: Some("rgba(0, 0, 0, 0.12)".to_string()),
+            table_header_background: Some("rgba(0, 0, 0, 0.04)".to_string()),
+            table_header_color: None,
+            table_row_even_bg: None,
+            table_row_hover_bg: None,
+
+            // HR
+            hr_color: Some("rgba(0, 0, 0, 0.15)".to_string()),
+            hr_style: None,
+
+            // Lists
+            list_marker_color: None,
+            task_list_check_color: None,
+
+            // Images
+            image_border_radius: None,
+            image_border: None,
+
+            // Admonitions (structured)
+            admonitions: Some(AdmonitionsTheme {
+                border_radius: None,
+                border_width: None,
+                title_font_weight: None,
+                info: Some(AdmonitionStyle {
+                    background: Some("rgba(33, 150, 243, 0.1)".to_string()),
+                    border_color: Some("#1976d2".to_string()),
+                    title_color: None,
+                    text_color: None,
+                    icon: Some("\u{2139}\u{fe0f}".to_string()),
+                }),
+                warning: Some(AdmonitionStyle {
+                    background: Some("rgba(230, 167, 0, 0.1)".to_string()),
+                    border_color: Some("#f57c00".to_string()),
+                    title_color: None,
+                    text_color: None,
+                    icon: Some("\u{26a0}\u{fe0f}".to_string()),
+                }),
+                danger: Some(AdmonitionStyle {
+                    background: Some("rgba(229, 57, 53, 0.1)".to_string()),
+                    border_color: Some("#d32f2f".to_string()),
+                    title_color: None,
+                    text_color: None,
+                    icon: Some("\u{1f534}".to_string()),
+                }),
+                tip: Some(AdmonitionStyle {
+                    background: Some("rgba(76, 175, 80, 0.1)".to_string()),
+                    border_color: Some("#388e3c".to_string()),
+                    title_color: None,
+                    text_color: None,
+                    icon: Some("\u{1f4a1}".to_string()),
+                }),
+                note: Some(AdmonitionStyle {
+                    background: Some("rgba(158, 158, 158, 0.1)".to_string()),
+                    border_color: Some("#757575".to_string()),
+                    title_color: None,
+                    text_color: None,
+                    icon: Some("\u{1f4dd}".to_string()),
+                }),
+                custom: None,
+            }),
+            // Legacy flat properties (backwards compat, prefer "admonitions" above)
+            admonition_info_bg: None,
+            admonition_warning_bg: None,
+            admonition_danger_bg: None,
+            admonition_tip_bg: None,
+            admonition_note_bg: None,
+
+            // KaTeX
+            katex_color: None,
+            katex_font_size: None,
+
+            // Emphasis
+            strong_color: None,
+            emphasis_color: None,
+            strikethrough_opacity: None,
         }),
     };
 

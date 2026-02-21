@@ -20,7 +20,6 @@ export class AutoSaveManager {
         try {
           await saveFile(filePath, content, encoding);
           saveTab(tabId);
-          console.log(`[AutoSave] Saved: ${filePath}`);
         } catch (error) {
           console.error('[AutoSave] Failed to save:', error);
         }
@@ -52,8 +51,7 @@ export class AutoSaveManager {
           try {
             await saveFile(filePath, content, encoding);
             saveTab(tabId);
-            console.log(`[AutoSave] Saved: ${filePath}`);
-          } catch (error) {
+            } catch (error) {
             console.error('[AutoSave] Failed to save:', error);
           }
         },

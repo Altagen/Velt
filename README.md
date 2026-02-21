@@ -35,7 +35,9 @@
 - **Bookmarks** for quick navigation
 - **Line operations**: duplicate, delete, move up/down
 - **Text transformations**: uppercase, lowercase, title case, sort lines
-- **Customizable themes** with hot-reload support
+- **Markdown preview** with live rendering, KaTeX math, Mermaid diagrams, and admonitions
+- **Split pane editing** with drag-to-resize and independent tab management
+- **Customizable themes** with hot-reload support and full markdown preview theming
 - **Cross-platform**: Linux, macOS, Windows
 
 ## Tech Stack
@@ -209,8 +211,10 @@ export VELT_CONFIG_HOME="$HOME/.config/velt-custom"
 ## Documentation
 
 - [Architecture](docs/ARCHITECTURE.md) - How Velt is structured
-- [Security](docs/SECURITY.md) - Security model and practices
+- [Theme System](docs/THEMES.md) - Theme customization reference
+- [Markdown](docs/MARKDOWN.md) - Markdown preview features and syntax
 - [Font System](docs/FONTS.md) - Font configuration and import
+- [Security](docs/SECURITY.md) - Security model and practices
 
 ## License
 
