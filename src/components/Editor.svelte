@@ -6,12 +6,14 @@
   import { settings } from '../stores/appStore';
   import FindReplacePanel from './FindReplacePanel.svelte';
   import GoToLineDialog from './GoToLineDialog.svelte';
-  import StatusBar from './StatusBar.svelte';
   import { findReplaceState, updateMatchInfo } from '../stores/findReplaceStore';
   import { goToLineState } from '../stores/goToLineStore';
+  import type { PaneId } from '../stores/paneStore';
 
   export let tab: Tab;
+  export let paneId: PaneId = 'left';
   export let onContentChange: (content: string) => void;
+  export let onStatusUpdate: (data: { line: number; column: number; totalLines: number; totalChars: number; selectedChars: number; eol: string }) => void = () => {};
 
   let editorContainer: HTMLDivElement;
   let editor: VeltEditor | null = null;
@@ -42,6 +44,15 @@
 
     // Detect line ending type
     eolType = editor.detectLineEnding();
+
+    onStatusUpdate({
+      line: cursorLine,
+      column: cursorColumn,
+      totalLines,
+      totalChars,
+      selectedChars,
+      eol: eolType,
+    });
   }
 
   function handleEOLChange(newEOL: string) {
@@ -62,17 +73,7 @@
 
     // Directly set the EOL type since we know what we just converted to
     eolType = newEOL;
-  }
-
-  function handleEncodingChange(newEncoding: string) {
-
-    // Update tab encoding - this will be used when saving the file
-    onContentChange(tab.content); // Trigger dirty state if needed
-
-    // Dispatch event to update tab encoding in parent
-    window.dispatchEvent(new CustomEvent('encoding-change', {
-      detail: { tabId: tab.id, encoding: newEncoding }
-    }));
+    updateStatusBar();
   }
 
   function handleFind(text: string, direction: 'next' | 'prev' | 'none' = 'none') {
@@ -182,6 +183,9 @@
     const handleEditorAction = (event: CustomEvent) => {
       if (!editor) return;
 
+      // Only respond if this event targets our pane (or has no target)
+      if (event.detail.targetPane && event.detail.targetPane !== paneId) return;
+
       const action = event.detail.action;
       switch (action) {
         case 'duplicateLine':
@@ -253,8 +257,48 @@
         case 'clearBookmarks':
           editor.clearBookmarks();
           break;
+        case 'markdownInsert':
+          handleMarkdownInsert(event.detail);
+          break;
       }
     };
+
+    function handleMarkdownInsert(detail: { type: string; before: string; after: string; text: string; placeholder: string; cursorOffset?: number }) {
+      if (!editor) return;
+      const view = editor.getView();
+      const state = view.state;
+      const { from, to } = state.selection.main;
+      const selectedText = state.sliceDoc(from, to);
+
+      if (detail.type === 'wrap') {
+        const inner = selectedText || detail.placeholder;
+        const replacement = detail.before + inner + detail.after;
+        view.dispatch({
+          changes: { from, to, insert: replacement },
+          selection: {
+            anchor: selectedText ? from : from + detail.before.length,
+            head: selectedText ? from + replacement.length : from + detail.before.length + inner.length,
+          },
+        });
+      } else if (detail.type === 'prepend') {
+        const line = state.doc.lineAt(from);
+        view.dispatch({
+          changes: { from: line.from, to: line.from, insert: detail.before },
+          selection: { anchor: from + detail.before.length },
+        });
+      } else if (detail.type === 'insert') {
+        const text = detail.text;
+        const cursorPos = detail.cursorOffset !== undefined
+          ? from + detail.cursorOffset
+          : from + text.length;
+        view.dispatch({
+          changes: { from, to, insert: text },
+          selection: { anchor: cursorPos },
+        });
+      }
+
+      view.focus();
+    }
 
     window.addEventListener('editor-action', handleEditorAction as EventListener);
 
@@ -324,18 +368,6 @@
     onClose={handleClose}
   />
   <GoToLineDialog onGoToLine={handleGoToLine} />
-  <StatusBar
-    line={cursorLine}
-    column={cursorColumn}
-    totalLines={totalLines}
-    totalChars={totalChars}
-    selectedChars={selectedChars}
-    encoding={tab.encoding.toUpperCase()}
-    language={tab.language || 'Plain Text'}
-    eol={eolType}
-    onEOLChange={handleEOLChange}
-    onEncodingChange={handleEncodingChange}
-  />
 </div>
 
 <style>
