@@ -22,6 +22,18 @@ export const tabs = writable<Tab[]>([]);
 export const activeTabId = writable<string | null>(null);
 export const settings = writable<AppSettings>(defaultSettings);
 
+// Hooks for paneStore integration (set by paneStore during init)
+export let onTabAdded: ((tabId: string) => void) | null = null;
+export let onTabRemoved: ((tabId: string) => void) | null = null;
+
+export function setOnTabAdded(fn: (tabId: string) => void) {
+  onTabAdded = fn;
+}
+
+export function setOnTabRemoved(fn: (tabId: string) => void) {
+  onTabRemoved = fn;
+}
+
 // Helper functions
 export function createTab(filePath: string | null = null, content: string = ''): Tab {
   return {
@@ -34,40 +46,50 @@ export function createTab(filePath: string | null = null, content: string = ''):
   };
 }
 
+export function createPreviewTab(sourceTab: Tab): Tab {
+  return {
+    id: crypto.randomUUID(),
+    filePath: sourceTab.filePath,
+    content: '',
+    originalContent: '',
+    isDirty: false,
+    encoding: sourceTab.encoding,
+    language: 'markdown',
+    isPreview: true,
+    sourceTabId: sourceTab.id,
+  };
+}
+
 export function addTab(tab: Tab) {
   tabs.update(t => [...t, tab]);
-  activeTabId.set(tab.id);
+  if (onTabAdded) {
+    onTabAdded(tab.id);
+  } else {
+    activeTabId.set(tab.id);
+  }
 }
 
 export function removeTab(tabId: string) {
   const currentTabs = get(tabs);
-  const currentActiveId = get(activeTabId);
 
-  // Find the index of the tab to remove
-  const index = currentTabs.findIndex(tab => tab.id === tabId);
-  if (index === -1) return; // Tab not found
+  // Find the tab to remove
+  const tabToRemove = currentTabs.find(tab => tab.id === tabId);
+  if (!tabToRemove) return;
 
-  let newActiveTabId: string | null = null;
-
-  // If we're removing the active tab, determine which tab to activate next
-  if (currentActiveId === tabId && currentTabs.length > 1) {
-    // Try to activate the tab to the right
-    if (index < currentTabs.length - 1) {
-      newActiveTabId = currentTabs[index + 1].id;
-    }
-    // If it's the last tab, activate the one to the left
-    else if (index > 0) {
-      newActiveTabId = currentTabs[index - 1].id;
+  // Collect IDs to remove: the tab itself + any preview tabs linked to it
+  const idsToRemove = new Set<string>([tabId]);
+  if (!tabToRemove.isPreview) {
+    // Closing a source tab → also close its preview tabs
+    for (const t of currentTabs) {
+      if (t.isPreview && t.sourceTabId === tabId) {
+        idsToRemove.add(t.id);
+      }
     }
   }
 
-  // Remove the tab
-  tabs.update(t => t.filter(tab => tab.id !== tabId));
-
-  // Update active tab if needed
-  if (currentActiveId === tabId) {
-    activeTabId.set(newActiveTabId);
-  }
+  // Remove the tabs from global store
+  // (paneStore auto-cleanup subscription handles pane removal + active tab fallback)
+  tabs.update(t => t.filter(tab => !idsToRemove.has(tab.id)));
 }
 
 export function updateTabContent(tabId: string, content: string) {
@@ -116,4 +138,19 @@ export function getTab(tabId: string): Tab | undefined {
     result = t.find(tab => tab.id === tabId);
   })();
   return result;
+}
+
+export function getPreviewTabForSource(sourceTabId: string): Tab | undefined {
+  let result: Tab | undefined;
+  tabs.subscribe(t => {
+    result = t.find(tab => tab.isPreview && tab.sourceTabId === sourceTabId);
+  })();
+  return result;
+}
+
+export function removePreviewTab(sourceTabId: string) {
+  const preview = getPreviewTabForSource(sourceTabId);
+  if (preview) {
+    removeTab(preview.id);
+  }
 }
