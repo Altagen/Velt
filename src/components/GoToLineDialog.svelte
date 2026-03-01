@@ -57,9 +57,12 @@
 </script>
 
 {#if $goToLineState.isOpen}
-  <div class="backdrop" on:click={handleBackdropClick}>
+  <div class="backdrop" role="presentation" on:click={handleBackdropClick} on:keydown={() => {}}>
     <div
       class="dialog"
+      role="dialog"
+      aria-modal="true"
+      tabindex="-1"
       style="
         background-color: {$currentTheme?.ui?.background || '#252526'};
         border-color: {$currentTheme?.ui?.border || '#3e3e42'};

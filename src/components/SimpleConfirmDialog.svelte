@@ -33,7 +33,7 @@
 <svelte:window on:keydown={handleKeyDown} />
 
 {#if isOpen}
-  <div class="dialog-overlay" on:click={handleOverlayClick}>
+  <div class="dialog-overlay" role="presentation" on:click={handleOverlayClick} on:keydown={() => {}}>
     <div
       class="dialog"
       style="background-color: {$currentTheme?.ui?.background || '#252526'}; border-color: {$currentTheme?.ui?.border || '#3e3e42'}"
@@ -64,6 +64,7 @@
         >
           {cancelLabel}
         </button>
+        <!-- svelte-ignore a11y_autofocus -->
         <button
           class="dialog-btn dialog-btn-primary"
           style="background-color: {$currentTheme?.ui?.accentPrimary || '#00d4aa'}; color: {$currentTheme?.editor?.background || '#1e1e1e'}"

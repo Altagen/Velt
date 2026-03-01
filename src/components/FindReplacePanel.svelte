@@ -93,6 +93,9 @@
   <div
     class="find-replace-panel"
     class:expanded={$findReplaceState.isExpanded}
+    role="dialog"
+    aria-label="Find and Replace"
+    tabindex="-1"
     style="
       background-color: {$currentTheme?.ui?.background || '#252526'};
       border-color: {$currentTheme?.ui?.border || '#3e3e42'};

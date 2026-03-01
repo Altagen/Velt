@@ -83,7 +83,7 @@
 <svelte:window on:keydown={handleEscape} />
 
 {#if $showSettingsModal}
-  <div class="modal-overlay" on:click={handleOverlayClick}>
+  <div class="modal-overlay" role="presentation" on:click={handleOverlayClick} on:keydown={() => {}}>
     <div
       class="modal"
       style="background-color: {$currentTheme?.ui?.background || '#252526'}; border-color: {$currentTheme?.ui?.border || '#3e3e42'}"
