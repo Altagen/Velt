@@ -18,9 +18,34 @@ export default defineConfig({
     },
   },
 
-  // Optimize dependencies
+  // Pre-bundle all CodeMirror language packages to prevent runtime dep discovery
+  // (runtime discovery triggers a forced HMR full-reload which crashes webkit2gtk)
   optimizeDeps: {
-    include: ['@altagen/velt-core'],
+    include: [
+      '@altagen/velt-core',
+      '@codemirror/language-data',
+      '@codemirror/lang-angular',
+      '@codemirror/lang-cpp',
+      '@codemirror/lang-css',
+      '@codemirror/lang-go',
+      '@codemirror/lang-html',
+      '@codemirror/lang-java',
+      '@codemirror/lang-javascript',
+      '@codemirror/lang-jinja',
+      '@codemirror/lang-json',
+      '@codemirror/lang-less',
+      '@codemirror/lang-liquid',
+      '@codemirror/lang-markdown',
+      '@codemirror/lang-php',
+      '@codemirror/lang-python',
+      '@codemirror/lang-rust',
+      '@codemirror/lang-sass',
+      '@codemirror/lang-sql',
+      '@codemirror/lang-vue',
+      '@codemirror/lang-wast',
+      '@codemirror/lang-xml',
+      '@codemirror/lang-yaml',
+    ],
   },
 
   // Better handling of local packages
