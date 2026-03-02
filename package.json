@@ -36,7 +36,7 @@
     "@tauri-apps/plugin-shell": "^2.3.5",
     "dompurify": "^3.3.1",
     "highlight.js": "^11.11.1",
-    "katex": "^0.16.32",
+    "katex": "^0.16.33",
     "markdown-it": "^14.1.1",
     "markdown-it-container": "^4.0.0",
     "markdown-it-texmath": "^1.0.0",
