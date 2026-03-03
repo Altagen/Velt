@@ -6,12 +6,10 @@
   import type { Tab } from '../types';
   import { currentTheme } from '../stores/themeStore';
   import { draggingTabId } from '../stores/paneStore';
-  import type { PaneId } from '../stores/paneStore';
   import X from 'phosphor-svelte/lib/X';
   import Eye from 'phosphor-svelte/lib/Eye';
   import EyeSlash from 'phosphor-svelte/lib/EyeSlash';
 
-  export let paneId: PaneId;
   export let paneTabs: Tab[];
   export let paneActiveTabId: string | null;
   export let onSelectTab: (tabId: string) => void;

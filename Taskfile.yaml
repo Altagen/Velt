@@ -25,10 +25,11 @@ tasks:
   # Testing & Linting
   # ============================================
   check:
-    desc: Run all checks (TypeScript + Rust)
+    desc: Run all checks (TypeScript + Rust + security audits)
     cmds:
       - task: check-ts
       - task: check-rust
+      - task: audit
 
   check-ts:
     desc: Run TypeScript/Svelte type checking

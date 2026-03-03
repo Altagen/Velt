@@ -51,7 +51,7 @@
       class="setting-card-footer"
       style="background-color: {$currentTheme?.ui?.menuBar || '#2d2d30'}; border-color: {$currentTheme?.ui?.border || '#3e3e42'}"
     >
-      <label style="color: {$currentTheme?.ui?.textColor || '#d4d4d4'}">
+      <label for="autosave-delay" style="color: {$currentTheme?.ui?.textColor || '#d4d4d4'}">
         Delay (ms):
       </label>
       <div class="number-control">
@@ -64,6 +64,7 @@
           −
         </button>
         <input
+          id="autosave-delay"
           type="text"
           inputmode="numeric"
           value={$settings.autoSaveDelay}

@@ -140,9 +140,12 @@
       <div
         class="status-item clickable"
         class:toolbar-active={isToolbarActive}
+        role="button"
+        tabindex="0"
         title={isToolbarActive ? 'Hide Markdown Toolbar' : 'Show Markdown Toolbar'}
         style="color: {isToolbarActive ? ($currentTheme?.ui?.accentPrimary || '#00d4aa') : ($currentTheme?.ui?.textSecondary || '#858585')}"
         on:click={(e) => { e.stopPropagation(); onToggleToolbar(); }}
+        on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggleToolbar(); } }}
       >
         <span class="icon markdown-icon">
           <svg viewBox="0 0 16 10" width="16" height="10" fill="currentColor" aria-hidden="true">
@@ -159,9 +162,12 @@
     <!-- Tab Size -->
     <div
       class="status-item clickable"
+      role="button"
+      tabindex="0"
       title="Tab Size (click to change)"
       style="color: {$currentTheme?.ui?.textColor || '#cccccc'}"
       on:click={(e) => { e.stopPropagation(); toggleTabSizeMenu(); }}
+      on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleTabSizeMenu(); } }}
     >
       <span class="icon"><ArrowRight size={14} weight="duotone" color={$currentTheme?.icons?.whitespace || '#78909C'} /></span>
       <span>Spaces: {$settings.tabSize}</span>
@@ -177,9 +183,12 @@
     <!-- Word Wrap -->
     <div
       class="status-item clickable"
+      role="button"
+      tabindex="0"
       title="Word Wrap (click to toggle)"
       style="color: {$currentTheme?.ui?.textColor || '#cccccc'}"
       on:click={(e) => { e.stopPropagation(); toggleWordWrap(); }}
+      on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleWordWrap(); } }}
     >
       <span class="icon">{#if $settings.wordWrap}<TextIndent size={14} weight="duotone" color={$currentTheme?.icons?.wrap || '#9575CD'} />{:else}<TextOutdent size={14} weight="duotone" color={$currentTheme?.icons?.wrap || '#9575CD'} />{/if}</span>
       <span>{$settings.wordWrap ? 'Wrap' : 'No Wrap'}</span>
@@ -188,9 +197,12 @@
     <!-- Show Invisibles -->
     <div
       class="status-item clickable"
+      role="button"
+      tabindex="0"
       title="Show Whitespace (click to toggle)"
       style="color: {$currentTheme?.ui?.textColor || '#cccccc'}"
       on:click={(e) => { e.stopPropagation(); toggleShowInvisibles(); }}
+      on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleShowInvisibles(); } }}
     >
       <span class="icon">{#if $settings.showInvisibles}<Paragraph size={14} weight="duotone" color={$currentTheme?.icons?.whitespace || '#78909C'} />{:else}<CircleDashed size={14} weight="duotone" color={$currentTheme?.icons?.whitespace || '#78909C'} />{/if}</span>
       <span>{$settings.showInvisibles ? 'Visible' : 'Hidden'}</span>
@@ -209,9 +221,12 @@
     <!-- EOL (Line Endings) -->
     <div
       class="status-item clickable"
+      role="button"
+      tabindex="0"
       title="Line Endings (click to change)"
       style="color: {$currentTheme?.ui?.textColor || '#cccccc'}"
       on:click={(e) => { e.stopPropagation(); toggleEOLMenu(); }}
+      on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleEOLMenu(); } }}
     >
       <span class="icon"><KeyReturn size={14} weight="duotone" color={$currentTheme?.icons?.eol || '#A1887F'} /></span>
       <span>{eol}</span>
@@ -227,9 +242,12 @@
     <!-- Encoding -->
     <div
       class="status-item clickable"
+      role="button"
+      tabindex="0"
       title="File Encoding (click to change)"
       style="color: {$currentTheme?.ui?.textColor || '#cccccc'}"
       on:click={(e) => { e.stopPropagation(); toggleEncodingMenu(); }}
+      on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleEncodingMenu(); } }}
     >
       <span class="icon"><FileText size={14} weight="duotone" color={$currentTheme?.icons?.encoding || '#F06292'} /></span>
       <span>{encoding}</span>
