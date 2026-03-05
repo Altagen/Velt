@@ -15,16 +15,24 @@
   export let onSelectTab: (tabId: string) => void;
   export let onCloseTab: (event: MouseEvent, tabId: string) => void;
 
+  // Allow drops on pane-group on platforms where Monaco blocks dragover bubbling (e.g. Windows/WebView2)
+  function allowDragOver(e: DragEvent) {
+    if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+    e.preventDefault();
+  }
+
   function handleDragStart(event: DragEvent, tabId: string) {
     draggingTabId.set(tabId);
     if (event.dataTransfer) {
       event.dataTransfer.effectAllowed = 'move';
       event.dataTransfer.setData('text/plain', tabId);
     }
+    document.addEventListener('dragover', allowDragOver);
   }
 
   function handleDragEnd() {
     draggingTabId.set(null);
+    document.removeEventListener('dragover', allowDragOver);
   }
 
   function handleKeyDown(event: KeyboardEvent, tabId: string) {
