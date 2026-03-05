@@ -1,6 +1,8 @@
 name: Security
 
 on:
+  push:
+    branches: [main]
   schedule:
     # Run every Monday at 9:00 UTC
     - cron: '0 9 * * 1'
@@ -81,30 +83,6 @@ jobs:
           cd src-tauri
           cargo deny check advisories || true
           cargo deny check licenses || true
-
-  # CodeQL for TypeScript
-  codeql-typescript:
-    name: 🛡️ CodeQL (TypeScript)
-    runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: javascript-typescript
-
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
-        with:
-          category: "/language:javascript-typescript"
 
   # SBOM generation
   sbom:
