@@ -137,6 +137,14 @@
   />
 
   <div class="pane-content">
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
+    <!-- Always-present overlay: pointer-events activated via CSS when body[data-dragging-tab] (WebView2 fix) -->
+    <div
+      class="drop-overlay"
+      on:dragover={handleDragOver}
+      on:dragleave={handleDragLeave}
+      on:drop={handleDrop}
+    />
     {#if activeTab}
       {#if activeTab.isPreview}
         <MarkdownPreview content={previewSourceContent} />
@@ -176,6 +184,17 @@
     flex: 1;
     overflow: hidden;
     position: relative;
+  }
+
+  .drop-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  :global(body[data-dragging-tab]) .drop-overlay {
+    pointer-events: auto;
   }
 
   .drop-target {

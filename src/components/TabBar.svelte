@@ -23,6 +23,7 @@
 
   function handleDragStart(event: DragEvent, tabId: string) {
     draggingTabId.set(tabId);
+    document.body.setAttribute('data-dragging-tab', '');
     if (event.dataTransfer) {
       event.dataTransfer.effectAllowed = 'move';
       event.dataTransfer.setData('text/plain', tabId);
@@ -32,6 +33,7 @@
 
   function handleDragEnd() {
     draggingTabId.set(null);
+    document.body.removeAttribute('data-dragging-tab');
     document.removeEventListener('dragover', allowDragOver);
   }
 
