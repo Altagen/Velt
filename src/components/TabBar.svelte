@@ -5,15 +5,21 @@
   import { getFileName } from '@altagen/velt-core';
   import type { Tab } from '../types';
   import { currentTheme } from '../stores/themeStore';
-  import { draggingTabId } from '../stores/paneStore';
+  import { draggingTabId, getPaneForTab, moveTabToPane, reorderTabInPane } from '../stores/paneStore';
+  import type { PaneId } from '../stores/paneStore';
   import X from 'phosphor-svelte/lib/X';
   import Eye from 'phosphor-svelte/lib/Eye';
   import EyeSlash from 'phosphor-svelte/lib/EyeSlash';
 
+  export let paneId: PaneId;
   export let paneTabs: Tab[];
   export let paneActiveTabId: string | null;
   export let onSelectTab: (tabId: string) => void;
   export let onCloseTab: (event: MouseEvent, tabId: string) => void;
+
+  // Insertion indicator state
+  let insertIndex: number | null = null;
+  let indicatorX: number | null = null;
 
   // Allow drops on pane-group on platforms where Monaco blocks dragover bubbling (e.g. Windows/WebView2)
   function allowDragOver(e: DragEvent) {
@@ -35,6 +41,67 @@
     draggingTabId.set(null);
     document.body.removeAttribute('data-dragging-tab');
     document.removeEventListener('dragover', allowDragOver);
+    insertIndex = null;
+    indicatorX = null;
+  }
+
+  // Tab bar drag-over: calculate insertion position and show indicator
+  function handleTabBarDragOver(event: DragEvent) {
+    if (!$draggingTabId) return;
+    event.preventDefault();
+    event.stopPropagation();
+
+    const tabBar = event.currentTarget as HTMLElement;
+    const tabBarRect = tabBar.getBoundingClientRect();
+    const tabElements = tabBar.querySelectorAll<HTMLElement>('.tab');
+    const cursorX = event.clientX;
+
+    let newInsertIndex = paneTabs.length;
+    let newIndicatorX = tabBarRect.width + tabBar.scrollLeft;
+
+    for (let i = 0; i < tabElements.length; i++) {
+      const rect = tabElements[i].getBoundingClientRect();
+      const center = (rect.left + rect.right) / 2;
+      if (cursorX < center) {
+        newInsertIndex = i;
+        newIndicatorX = rect.left - tabBarRect.left + tabBar.scrollLeft;
+        break;
+      }
+      newIndicatorX = rect.right - tabBarRect.left + tabBar.scrollLeft;
+    }
+
+    insertIndex = newInsertIndex;
+    indicatorX = newIndicatorX;
+  }
+
+  function handleTabBarDragLeave() {
+    insertIndex = null;
+    indicatorX = null;
+  }
+
+  function handleTabBarDrop(event: DragEvent) {
+    event.stopPropagation();
+    const tabId = $draggingTabId;
+    if (!tabId || insertIndex === null) {
+      insertIndex = null;
+      indicatorX = null;
+      return;
+    }
+
+    const sourcePaneId = getPaneForTab(tabId);
+    if (sourcePaneId === paneId) {
+      // Same pane: reorder
+      const currentIdx = paneTabs.findIndex(t => t.id === tabId);
+      let targetIdx = insertIndex;
+      if (currentIdx < insertIndex) targetIdx--;
+      reorderTabInPane(paneId, tabId, targetIdx);
+    } else {
+      // Different pane: move tab here
+      moveTabToPane(tabId, paneId);
+    }
+
+    insertIndex = null;
+    indicatorX = null;
   }
 
   function handleKeyDown(event: KeyboardEvent, tabId: string) {
@@ -70,9 +137,13 @@
   }
 </script>
 
+<!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
   class="tab-bar"
   style="background-color: {$currentTheme?.ui?.tabBar || '#2d2d30'}"
+  on:dragover={handleTabBarDragOver}
+  on:dragleave={handleTabBarDragLeave}
+  on:drop={handleTabBarDrop}
 >
   {#each paneTabs as tab (tab.id)}
     <div
@@ -128,10 +199,17 @@
       </button>
     </div>
   {/each}
+  {#if insertIndex !== null && indicatorX !== null}
+    <div
+      class="drop-indicator"
+      style="left: {indicatorX}px; background-color: {$currentTheme?.ui?.accentPrimary || '#00d4aa'}"
+    />
+  {/if}
 </div>
 
 <style>
   .tab-bar {
+    position: relative;
     display: flex;
     border-bottom: 1px solid rgba(0, 0, 0, 0.3);
     overflow-x: auto;
@@ -222,5 +300,15 @@
 
   .close-button:hover {
     opacity: 1;
+  }
+
+  .drop-indicator {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    width: 2px;
+    border-radius: 1px;
+    pointer-events: none;
+    z-index: 10;
   }
 </style>

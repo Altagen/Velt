@@ -130,6 +130,7 @@
   aria-label="{paneId} editor pane"
 >
   <TabBar
+    {paneId}
     {paneTabs}
     paneActiveTabId={paneState.activeTabId}
     onSelectTab={handleSelectTab}
