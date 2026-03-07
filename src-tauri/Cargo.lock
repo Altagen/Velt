@@ -4089,6 +4089,7 @@ dependencies = [
 name = "velt"
 version = "0.2.2"
 dependencies = [
+ "base64 0.22.1",
  "clap",
  "dirs 5.0.1",
  "encoding_rs",
