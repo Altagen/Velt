@@ -50,12 +50,15 @@ export async function saveFile(
 
 export async function saveFileAs(
   content: string,
-  encoding?: string
+  encoding?: string,
+  defaultPath?: string,
+  filters?: { name: string; extensions: string[] }[]
 ): Promise<string | null> {
   try {
     // Open native save dialog
     const filePath = await save({
-      defaultPath: 'untitled.txt',
+      defaultPath: defaultPath ?? 'untitled.txt',
+      filters,
     });
 
     if (!filePath) {

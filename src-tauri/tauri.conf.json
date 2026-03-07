@@ -1,6 +1,6 @@
 {
   "productName": "Velt",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "identifier": "com.altagen.velt",
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -20,11 +20,12 @@
         "resizable": true,
         "fullscreen": false,
         "decorations": true,
-        "transparent": false
+        "transparent": false,
+        "dragDropEnabled": false
       }
     ],
     "security": {
-      "csp": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src ipc: http://ipc.localhost",
+      "csp": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: http://asset.localhost https://asset.localhost asset:; font-src 'self' data:; connect-src ipc: http://ipc.localhost",
       "capabilities": ["default"]
     },
     "withGlobalTauri": true

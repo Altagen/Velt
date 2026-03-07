@@ -59,6 +59,13 @@ fn detect_encoding(bytes: &[u8]) -> EncodingInfo {
 }
 
 #[tauri::command]
+fn read_file_as_base64(path: String) -> Result<String, String> {
+    use base64::{engine::general_purpose, Engine as _};
+    let bytes = fs::read(&path).map_err(|e| e.to_string())?;
+    Ok(general_purpose::STANDARD.encode(&bytes))
+}
+
+#[tauri::command]
 fn read_file_content(path: String) -> Result<FileContent, String> {
     let bytes = fs::read(&path).map_err(|e| e.to_string())?;
 
@@ -579,6 +586,7 @@ pub fn run_with_files(files: Vec<String>) {
         .plugin(tauri_plugin_dialog::init())
         .manage(CliFilesState(Mutex::new(files)))
         .invoke_handler(tauri::generate_handler![
+            read_file_as_base64,
             read_file_content,
             write_file_content,
             get_config,

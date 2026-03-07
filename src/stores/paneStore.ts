@@ -156,6 +156,20 @@ export function moveTabToPane(tabId: string, targetPaneId: PaneId) {
   syncActiveTabId();
 }
 
+export function reorderTabInPane(paneId: PaneId, tabId: string, newIndex: number) {
+  paneLayout.update(layout => {
+    const pane = paneId === 'right' ? layout.right : layout.left;
+    if (!pane) return layout;
+
+    const newTabIds = pane.tabIds.filter(id => id !== tabId);
+    const clamped = Math.max(0, Math.min(newIndex, newTabIds.length));
+    newTabIds.splice(clamped, 0, tabId);
+    pane.tabIds = newTabIds;
+
+    return { ...layout };
+  });
+}
+
 export function setFocusedPane(paneId: PaneId) {
   const layout = get(paneLayout);
   if (layout.focusedPane === paneId) return;
