@@ -2,7 +2,9 @@
   import TabBar from './TabBar.svelte';
   import Editor from './Editor.svelte';
   import MarkdownPreview from './MarkdownPreview.svelte';
+  import NoteEditor from './NoteEditor.svelte';
   import { tabs, removeTab, getTab, updateTabContent, createTab, addTab } from '../stores/appStore';
+  import { noteModeSet } from '../stores/noteModeStore';
   import { setActiveTab, setFocusedPane, moveTabToPane, draggingTabId } from '../stores/paneStore';
   import type { PaneId, PaneState } from '../stores/paneStore';
   import { openCloseTabDialog } from '../stores/dialogStore';
@@ -149,6 +151,8 @@
     {#if activeTab}
       {#if activeTab.isPreview}
         <MarkdownPreview content={previewSourceContent} />
+      {:else if $noteModeSet.has(activeTab.id)}
+        <NoteEditor tab={activeTab} onContentChange={handleContentChange} />
       {:else}
         <Editor tab={activeTab} {paneId} onContentChange={handleContentChange} {onStatusUpdate} />
       {/if}

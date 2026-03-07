@@ -26,6 +26,7 @@
   export let isMarkdown: boolean = false;
   export let isToolbarActive: boolean = false;
   export let onToggleToolbar: () => void = () => {};
+  export let isNoteMode: boolean = false;
 
   // Dropdown states
   let showTabSizeMenu = false;
@@ -108,6 +109,11 @@
   "
 >
   <div class="status-left">
+    {#if isNoteMode}
+      <div class="status-item" style="color: {$currentTheme?.ui?.accentPrimary || '#00d4aa'}">
+        <span>Note</span>
+      </div>
+    {:else}
     <div
       class="status-item"
       title="Cursor Position (Line : Column)"
@@ -156,8 +162,10 @@
         <span>Markdown</span>
       </div>
     {/if}
+    {/if}
   </div>
 
+  {#if !isNoteMode}
   <div class="status-right">
     <!-- Tab Size -->
     <div
@@ -273,6 +281,7 @@
     </div>
 
   </div>
+  {/if}
 </div>
 
 <style>

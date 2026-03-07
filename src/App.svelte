@@ -9,6 +9,7 @@
   import StatusBar from './components/StatusBar.svelte';
   import { tabs, activeTabId, addTab, createTab, updateTabContent, settings, defaultSettings, removeTab, getTab, saveTab, updateTabFile, updateTabEncoding, setOnTabAdded, setOnTabRemoved } from './stores/appStore';
   import { isMarkdownFile, isMarkdownToolbarActive, toggleMarkdownToolbar } from './stores/markdownPreviewStore';
+  import { noteModeSet } from './stores/noteModeStore';
   import { paneLayout, leftPane, rightPane, hasRightPane, focusedPaneId, draggingTabId, addTabToPane, moveTabToPane, setFocusedPane } from './stores/paneStore';
   import { closeTabDialog, closeCloseTabDialog } from './stores/dialogStore';
   import { reloadDialog, closeReloadDialog } from './stores/reloadDialogStore';
@@ -84,6 +85,7 @@
 
   // Derived: which tab's info to show in StatusBar
   $: statusTab = $focusedPaneId === 'right' && rightPaneActiveTab ? rightPaneActiveTab : leftPaneActiveTab;
+  $: isNoteMode = statusTab ? $noteModeSet.has(statusTab.id) : false;
 
   $: {
     if ($activeTabId) {
@@ -355,6 +357,7 @@
       isMarkdown={$isMarkdownFile}
       isToolbarActive={$isMarkdownToolbarActive}
       onToggleToolbar={toggleMarkdownToolbar}
+      {isNoteMode}
     />
   {/if}
 </div>

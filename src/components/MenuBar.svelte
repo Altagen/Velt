@@ -12,9 +12,11 @@
   import RecentFilesList from './RecentFilesList.svelte';
   import { invoke } from '@tauri-apps/api/core';
   import { toggleMarkdownMode } from '../stores/markdownPreviewStore';
+  import { addNoteTab, noteModeSet } from '../stores/noteModeStore';
   import { focusedPaneId } from '../stores/paneStore';
   import { get } from 'svelte/store';
   import FilePlus from 'phosphor-svelte/lib/FilePlus';
+  import NotePencil from 'phosphor-svelte/lib/NotePencil';
   import AppWindow from 'phosphor-svelte/lib/AppWindow';
   import FolderOpen from 'phosphor-svelte/lib/FolderOpen';
   import FloppyDisk from 'phosphor-svelte/lib/FloppyDisk';
@@ -108,7 +110,12 @@
     if (!tab) return;
 
     try {
-      const filePath = await saveFileAs(tab.content, tab.encoding);
+      const isNote = $noteModeSet.has(tab.id);
+      const defaultPath = isNote ? extractNoteTitle(tab.content) + '.md' : undefined;
+      const filters = isNote
+        ? [{ name: 'Markdown', extensions: ['md', 'markdown'] }, { name: 'All Files', extensions: ['*'] }]
+        : undefined;
+      const filePath = await saveFileAs(tab.content, tab.encoding, defaultPath, filters);
       if (filePath) {
         updateTabFile($activeTabId, filePath, tab.content, tab.encoding);
         // Add to recent files
@@ -175,9 +182,55 @@
     }
   }
 
+  async function handleOpenNote() {
+    try {
+      const { open: openDialog } = await import('@tauri-apps/plugin-dialog');
+      const filePath = await openDialog({
+        multiple: false,
+        directory: false,
+        filters: [{ name: 'Markdown', extensions: ['md', 'markdown'] }],
+      });
+
+      if (!filePath || typeof filePath !== 'string') return;
+
+      // If already open, switch to it and ensure note mode
+      const existingTab = $tabs.find(t => t.filePath === filePath);
+      if (existingTab) {
+        activeTabId.set(existingTab.id);
+        addNoteTab(existingTab.id);
+        return;
+      }
+
+      const fileContent = await invoke<FileContent>('read_file_content', { path: filePath });
+      const newTab = createTab(fileContent.path, fileContent.content);
+      newTab.encoding = fileContent.encoding;
+      addTab(newTab);
+      addNoteTab(newTab.id);
+      await addRecentFile(fileContent.path);
+    } catch (error) {
+      console.error('Failed to open note:', error);
+      alert(`Failed to open note: ${error}`);
+    }
+  }
+
   function handleNew() {
     const newTab = createTab();
     addTab(newTab);
+  }
+
+  function handleNewNote() {
+    const newTab = createTab();
+    addTab(newTab);
+    addNoteTab(newTab.id);
+  }
+
+  function extractNoteTitle(content: string): string {
+    const match = content.match(/^#\s+(.+)/m);
+    if (!match || !match[1].trim()) return 'untitled';
+    return match[1].trim()
+      .replace(/[<>:"/\\|?*\x00-\x1f]/g, '')
+      .trim()
+      .slice(0, 100) || 'untitled';
   }
 
   // Count dirty tabs with file paths
@@ -492,6 +545,17 @@
 
   <button
     class="menu-button"
+    on:click={handleNewNote}
+    title="New Note (WYSIWYG)"
+    tabindex="-1"
+    style="color: {$currentTheme?.ui?.textColor || '#cccccc'}"
+  >
+    <span class="icon"><NotePencil size={18} weight="duotone" color={$currentTheme?.icons?.file || '#64B5F6'} /></span>
+    <span class="label">New Note</span>
+  </button>
+
+  <button
+    class="menu-button"
     on:click={handleNewWindow}
     title="New Window (Ctrl+Shift+N)"
     tabindex="-1"
@@ -510,6 +574,17 @@
   >
     <span class="icon"><FolderOpen size={18} weight="duotone" color={$currentTheme?.icons?.folder || '#FFB74D'} /></span>
     <span class="label">Open</span>
+  </button>
+
+  <button
+    class="menu-button"
+    on:click={handleOpenNote}
+    title="Open Note (WYSIWYG)"
+    tabindex="-1"
+    style="color: {$currentTheme?.ui?.textColor || '#cccccc'}"
+  >
+    <span class="icon"><NotePencil size={18} weight="duotone" color={$currentTheme?.icons?.file || '#64B5F6'} /></span>
+    <span class="label">Open Note</span>
   </button>
 
   <RecentFilesList onFileSelect={handleOpenRecentFile} />

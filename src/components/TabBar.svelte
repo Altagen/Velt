@@ -2,6 +2,7 @@
   import { getTab } from '../stores/appStore';
   import { openCloseTabDialog } from '../stores/dialogStore';
   import { markdownModeSet, toggleMarkdownMode } from '../stores/markdownPreviewStore';
+  import { noteModeSet } from '../stores/noteModeStore';
   import { getFileName } from '@altagen/velt-core';
   import type { Tab } from '../types';
   import { currentTheme } from '../stores/themeStore';
@@ -10,6 +11,7 @@
   import X from 'phosphor-svelte/lib/X';
   import Eye from 'phosphor-svelte/lib/Eye';
   import EyeSlash from 'phosphor-svelte/lib/EyeSlash';
+  import NotePencil from 'phosphor-svelte/lib/NotePencil';
 
   export let paneId: PaneId;
   export let paneTabs: Tab[];
@@ -163,7 +165,11 @@
       tabindex="-1"
       title={tab.filePath || 'Untitled'}
     >
-      {#if !tab.isPreview && isTabMdFile(tab)}
+      {#if $noteModeSet.has(tab.id)}
+        <span class="icon note-icon">
+          <NotePencil size={14} weight="duotone" color={$currentTheme?.ui?.accentPrimary || '#00d4aa'} />
+        </span>
+      {:else if !tab.isPreview && isTabMdFile(tab)}
         <button
           class="preview-toggle"
           on:click={(e) => handleTogglePreview(e, tab.id)}
@@ -233,7 +239,8 @@
     filter: brightness(1.15);
   }
 
-  .preview-icon {
+  .preview-icon,
+  .note-icon {
     display: flex;
     align-items: center;
     flex-shrink: 0;
