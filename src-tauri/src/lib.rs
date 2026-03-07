@@ -60,7 +60,7 @@ fn detect_encoding(bytes: &[u8]) -> EncodingInfo {
 
 #[tauri::command]
 fn read_file_as_base64(path: String) -> Result<String, String> {
-    use base64::{Engine as _, engine::general_purpose};
+    use base64::{engine::general_purpose, Engine as _};
     let bytes = fs::read(&path).map_err(|e| e.to_string())?;
     Ok(general_purpose::STANDARD.encode(&bytes))
 }
