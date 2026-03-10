@@ -302,6 +302,22 @@
         on:mouseleave={startHideTable}
         on:mousedown|preventDefault={() => editor?.chain().focus().deleteColumn().run()}
       >−</button>
+
+      <!-- Delete table -->
+      <button
+        class="table-ctrl-btn"
+        title="Delete table"
+        style="
+          top:              {tableRect.top - 28}px;
+          left:             {tableRect.left + tableRect.width - 22}px;
+          background-color: {$currentTheme?.ui?.background || '#252526'};
+          border-color:     {$currentTheme?.ui?.border || '#3e3e42'};
+          color:            {$currentTheme?.ui?.accentDanger || '#e53935'};
+        "
+        on:mouseenter={cancelHideTable}
+        on:mouseleave={startHideTable}
+        on:mousedown|preventDefault={() => editor?.chain().focus().deleteTable().run()}
+      >×</button>
     {/if}
   </div>
 </div>
