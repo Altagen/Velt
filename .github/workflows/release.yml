@@ -40,7 +40,7 @@ jobs:
 
       - name: Create release
         id: create_release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ github.ref_name }}
           name: Velt ${{ steps.version.outputs.version }}
@@ -183,7 +183,7 @@ jobs:
           Get-ChildItem release-artifacts/
 
       - name: Upload artifacts to release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ github.ref_name }}
           files: release-artifacts/*
@@ -244,7 +244,7 @@ jobs:
         run: task ci:checksums DIR=release-assets
 
       - name: Upload SBOM and checksums
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ github.ref_name }}
           files: |
